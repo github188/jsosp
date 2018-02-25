@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<versions latestVersion="2">
+	<version id="2">
+		<updateContent>
+		<![CDATA[
+			版本更新测试
+		]]>
+		</updateContent>
+		<updateUrl>
+		<![CDATA[
+			https://www.pgyer.com/Ntwa
+		]]>
+		</updateUrl>
+	</version>
+	<version id="1">
+		<updateContent>
+		<![CDATA[
+			初始版本
+		]]>
+		</updateContent>
+		<updateUrl>
+		<![CDATA[
+			https://www.pgyer.com/apiv1/app/install?aId=2b63353cc412ba96665ebcdb7c584810&_api_key=64f9b6de2c10bf0e7b955296f8b4a56a
+		]]>
+		</updateUrl>
+	</version>
+</versions>

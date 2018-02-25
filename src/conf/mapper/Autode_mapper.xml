@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.AutoDao" >
+  	
+	<insert id="insertdeploy" parameterType="String">
+		 INSERT INTO devops_deploy (id, ip, type, version, time, status) VALUES (#{id},#{ip},#{type},#{version},#{time},#{status});
+  	</insert>
+
+	<select id="queryhistorydeployed" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ip AS IP,
+			type AS TYPE,
+			version AS VERSION,
+			time AS TIME,
+			status AS STATUS
+		FROM
+			devops_deploy 
+		where time >= #{starttime} and time <= #{endtime} order by TIME desc
+	]]>
+	</select>
+  
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<versions latestVersion="1.0.0">
+	<version id="1.0.0">
+		<updateContent>
+		<![CDATA[
+			1.0.0新版上线
+		]]>
+		</updateContent>
+		<updateUrl>
+		<![CDATA[
+			itms-services://?action=download-manifest&url=https%3A%2F%2Fwww.pgyer.com%2Fapiv1%2Fapp%2Fplist%3FaId%3D286dfa63b6b7b7735aec315f4b3d3e65%26_api_key%3D9cb594b528fc000ae57edc7507b1d015
+		]]>
+		</updateUrl>
+	</version>
+</versions>

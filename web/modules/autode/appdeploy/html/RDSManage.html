@@ -1,0 +1,61 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化部署管理</a></li>
+		  <li class="active">RDS管理</li>
+		</ol>
+	</div>
+</div>
+<h1>RDS管理</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="RDSManage">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div> 
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">RDS列表&nbsp; &nbsp;<button type="button" ng-click="exportrds()" class="btn btn-primary">导出</button></h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>集群名称</th>
+            <th>实例名称</th>
+            <th>实例描述</th>
+            <th>IP(域名)</th>
+            <th>端口</th>
+            <th>内存</th>
+            <th>存储空间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="rds in rdss">
+            <td>{{$index+1}}</td>
+            <td>{{rds.clustername}}</td>
+            <td>{{rds.name}}</td>
+            <td>{{rds.desc}}</td>
+            <td>{{rds.ip}}</td>
+            <td>{{rds.port}}</td>
+            <td>{{rds.memory}}</td>
+            <td>{{rds.storage}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="RDSManage">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="RDSManage">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn'>{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RDSManage">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RDSManage">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

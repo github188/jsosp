@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.elk.dao.ELKDao">
+
+	<insert id="add" parameterType="String">
+		INSERT INTO elk_report (ID, IP, MESSAGE, ISSEND, CREATE_TIME,ISRECOVERY) VALUES
+			(#{id},#{ip},#{message},#{issend},sysdate(),#{isRecovery});
+	</insert>
+	
+	<select id="query" resultType="java.util.HashMap">
+		SELECT
+			id as id,
+			MESSAGE AS MESSAGE,
+			ISSEND AS ISSEND,
+			CREATE_TIME AS CREATE_TIME
+		FROM
+			elk_report 
+		where ip = #{ip} and issend = #{issend} and isRecovery = #{isRecovery} order by CREATE_TIME desc limit 1
+	</select>
+	
+	<select id="queryCardMapped" resultType="java.util.HashMap">
+		SELECT
+			id as id,
+			IP as IP,
+			MESSAGE AS MESSAGE,
+			ISSEND AS ISSEND,
+			CREATE_TIME AS CREATE_TIME
+		FROM
+			elk_report 
+		where message LIKE CONCAT('%', #{platform}, '%') and create_time like concat('%', #{stat_date}, '%') and ip='0.0.0.0'
+		limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="queryCardMappedCounts" resultType="java.util.HashMap">
+		SELECT
+			count(1) as COUNT
+		FROM
+			elk_report 
+		where message LIKE CONCAT('%', #{platform}, '%') and create_time like concat('%', #{stat_date}, '%') and ip='0.0.0.0'
+	</select>
+
+</mapper>

@@ -1,0 +1,100 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化巡检</a></li>
+		  <li class="active">Redis资源检测</li>
+		</ol>
+	</div>
+</div>
+<h1>Redis资源检测</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="RedisResource">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+	  <div class="col-md-3">
+	    <label for="projectName" class="control-label">检测开始时间</label>
+	    <p class="input-group">
+	      <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd HH:mm:ss" ng-model="dt" is-open="opened" close-text="Close" required/>
+	      <span class="input-group-btn">
+	        <button type="button" class="btn btn-default" ng-click="openCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+	      </span>
+	    </p>	    
+	   </div>
+	  <div class="col-md-3">
+	    <label for="projectName" class="control-label">检测结束时间</label>
+	    <p class="input-group">
+	      <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd HH:mm:ss" ng-model="dt1" is-open="opened1" close-text="Close" required/>
+	      <span class="input-group-btn">
+	        <button type="button" class="btn btn-default" ng-click="openCalendar1($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+	      </span>
+	    </p>	    
+	  </div>
+	  <div class="col-md-2">
+	  	<br>
+	    <button ng-click="query()" class="btn btn-primary">查询</button>
+	    <button ng-click="listbynodeline()" class="btn btn-primary">详细</button>
+	  </div>	
+</div>
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+	  <div ng-repeat="project in projects track by $index">
+	    <div class="col-md-12">
+	  		<ng-echarts style="height:30rem;" class="col-md-12 echarts" ec-config="project.pieConfig1" ec-option="project.option1" ></ng-echarts>
+	  	</div>
+	  </div>    
+    <div class="">
+      <h4 class="margin-bottom-15">键列表</h4>
+      <table class="table table-condensed" style="word-break:break-all; word-wrap:break-all;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="text-align:center;">检测时间</th>
+            <th style="text-align:center;">Redis实例</th>
+            <th style="text-align:center;">node1</th>
+            <th style="text-align:center;">node2</th>
+            <th style="text-align:center;">node3</th>
+            <th style="text-align:center;">node4</th>
+            <th style="text-align:center;">node5</th>
+            <th style="text-align:center;">node6</th>
+            <th style="text-align:center;">node7</th>
+            <th style="text-align:center;">node8</th>
+            <th style="text-align:center;">total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr  ng-mouseover="tableblur($index)" ng-mouseleave="tableleave()"  ng-repeat="redisSource in redisSources track by $index">
+            <td style="{{redisSource.style}};text-align:center;">{{$index+1}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.check_time}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.redis_host}}</td>
+            <td style="{{redisSource.style}};text-align:center">{{redisSource.node1}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.node2}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.node3}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.node4}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.node5}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.node6}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.node7}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.node8}}</td>
+            <td style="{{redisSource.style}};text-align:center;">{{redisSource.total}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="RedisResource" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="RedisResource" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RedisResource" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RedisResource" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+

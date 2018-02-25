@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.NginxDAO">
+
+	<select id="infoquery" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			id as ID,
+			check_time as CHECK_TIME,
+			host_ip as HOST_IP,
+			host_name as HOST_NAME,
+			acc_ip as ACC_IP,
+			acc_times as ACC_TIMES
+		FROM
+			nginx_access_ip_statictis
+			where 1=1
+	]]>
+	<if test='sourceip != "" '>  
+		and acc_ip = #{sourceip} 
+    </if>
+	<if test='starttime != "" '>  
+		and check_time >= #{starttime} 
+    </if>
+	<if test='endtime != "" '>  
+		and #{endtime} >= check_time  
+    </if>
+    order by check_time desc,acc_times desc
+	limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="infoqueryBynginx" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			host_name as HOST_NAME,
+			count(1) as COUNT
+		FROM
+			nginx_access_ip_statictis
+			where 1=1
+	]]>
+	<if test='sourceip != "" '>  
+		and acc_ip = #{sourceip} 
+    </if>
+	<if test='starttime != "" '>  
+		and check_time >= #{starttime} 
+    </if>
+	<if test='endtime != "" '>  
+		and #{endtime} >= check_time  
+    </if>
+	group by host_name
+	</select>
+	
+	<select id="infoquerytop10" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			acc_ip as ACC_IP,
+			sum(acc_times) as COUNT
+		FROM
+			nginx_access_ip_statictis
+		where 1=1
+	]]>
+	<if test='sourceip != "" '>  
+		and acc_ip = #{sourceip} 
+    </if>
+	<if test='starttime != "" '>  
+		and check_time >= #{starttime} 
+    </if>
+	<if test='endtime != "" '>  
+		and #{endtime} >= check_time  
+    </if>
+	group by acc_ip
+	order by COUNT desc
+	limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="queryCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) as COUNTS
+		FROM
+			nginx_access_ip_statictis
+		where 1=1
+	]]>
+	<if test='sourceip != "" '>  
+		and acc_ip = #{sourceip} 
+    </if>
+	<if test='starttime != "" '>  
+		and check_time >= #{starttime} 
+    </if>
+	<if test='endtime != "" '>  
+		and #{endtime} >= check_time 
+    </if>
+	</select>
+	
+	<select id="querydetailCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) as COUNTS
+		FROM
+			nginx_access_ip_list_normal
+		where 1=1
+	]]>
+	<if test='sourceip != "" '>  
+		and park_no = #{sourceip} 
+    </if>
+	<if test='serviceid != "" '>  
+		and service_type = #{serviceid} 
+    </if>
+	<if test='starttime != "" '>  
+		and check_time >= #{starttime} 
+    </if>
+	<if test='endtime != "" '>  
+		and #{endtime} >= check_time 
+    </if>
+	</select>
+	
+	<select id="detailquery" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			id as ID,
+			check_time as CHECK_TIME,
+			host_ip as HOST_IP,
+			host_name as HOST_NAME,
+			service_type as SERVICE_TYPE,
+			acc_time as ACC_TIME,
+			acc_ip as ACC_IP,
+			cid as CID,
+			park_no as PARK_NO
+		FROM
+			nginx_access_ip_list_normal
+			where 1=1
+	]]>
+	<if test='sourceip != "" '>  
+		and park_no = #{sourceip} 
+    </if>
+    <if test='serviceid != "" '>  
+		and service_type = #{serviceid} 
+    </if>
+	<if test='starttime != "" '>  
+		and check_time >= #{starttime} 
+    </if>
+	<if test='endtime != "" '>  
+		and #{endtime} >= check_time  
+    </if>
+    order by check_time desc
+	limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="detailqueryByserviceid" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			d.service_name as SERVICE_TYPE,
+			count(1) as COUNT
+		FROM
+			api_service_type_list d
+		inner join nginx_access_ip_list_normal n on n.service_type=d.service_type
+			where 1=1
+	]]>
+	<if test='sourceip != "" '>  
+		and park_no = #{sourceip} 
+    </if>
+    <if test='serviceid != "" '>  
+		and service_type = #{serviceid} 
+    </if>
+	<if test='starttime != "" '>  
+		and check_time >= #{starttime} 
+    </if>
+	<if test='endtime != "" '>  
+		and #{endtime} >= check_time  
+    </if>
+    group by d.service_name
+	</select>
+	
+	<select id="detailquerytop10" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			b.name AS ACC_IP,
+			count(1) as COUNT
+		FROM
+			nginx_access_ip_list_normal n
+		left join cs_cf_businesser b on n.cid=b.CODE
+		where 1=1
+	]]>
+	<if test='sourceip != "" '>  
+		and park_no = #{sourceip} 
+    </if>
+    <if test='serviceid != "" '>  
+		and service_type = #{serviceid} 
+    </if>
+	<if test='starttime != "" '>  
+		and check_time >= #{starttime} 
+    </if>
+	<if test='endtime != "" '>  
+		and #{endtime} >= check_time  
+    </if>
+    group by n.cid
+    order by COUNT DESC
+	limit #{startpages},#{pageSize}
+	</select>
+	
+</mapper>

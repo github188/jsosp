@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.security.user.dao.UserDao">
+
+	<insert id="addUser" parameterType="String">
+		INSERT INTO sec_user (id, account, password, user_name, unit_name,mobile,create_user,create_time,remark) VALUES
+			(#{id},#{account},#{password},#{userName},#{unitName},#{telephone},'',sysdate(),#{remark});
+	</insert>
+	
+	<insert id="addUserRole" parameterType="String">
+		INSERT INTO sec_user_role (id, user_id, role_id, create_user, create_time) VALUES
+			(#{id},#{userId},#{roleId},'',sysdate());
+	</insert>
+
+	<select id="queryUserlists" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			u.id AS ID,
+			u.account AS ACCOUNT,
+			p.NAME AS USERNAME,
+			p.DEPARTMENT AS UNITNAME,
+			p.PHONE AS TELEPHONE,
+			u.CREATE_TIME AS CREATETIME,
+			u.remark AS REMARK
+		FROM
+			sec_user u
+		INNER join mas_person p on p.id = u.PERSON_ID
+		where u.account LIKE CONCAT('%', #{account}, '%') and p.name LIKE CONCAT('%', #{userName}, '%') 
+		and p.PHONE LIKE CONCAT('%', #{telephone}, '%') limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<select id="queryUserCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) AS USERCOUNTS
+		FROM
+			sec_user u
+		INNER join mas_person p on p.id = u.PERSON_ID
+		where u.account LIKE CONCAT('%', #{account}, '%') and p.name LIKE CONCAT('%', #{userName}, '%') 
+		and p.PHONE LIKE CONCAT('%', #{telephone}, '%')
+	]]>
+	</select>
+	
+	<select id="queryUserByAccount" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			u.id AS ID ,
+			u.password AS PASSWORD ,
+			p.name AS USER_NAME 
+		FROM
+			sec_user u
+		inner join mas_person p on u.person_id = p.id
+		where u.account = #{account}
+	]]>
+	</select>
+
+</mapper>

@@ -1,0 +1,77 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化巡检</a></li>
+		  <li class="active">DB活动任务检查</li>
+		</ol>
+	</div>
+</div>
+<h1>DB活动任务检查</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="RedisResource">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3 margin-bottom-15">
+    <label for="customerCode" class="control-label">数据库选择</label>
+      <select ng-init="database = databases[0]" class="form-control" ng-model="database" ng-options="database.name for database in databases" required></select>
+  </div>
+  <div class="col-md-3 margin-bottom-15">
+<!--   	 <br> -->
+<!--     <button type="button" ng-click="query()" class="btn btn-primary">查询</button> -->
+    <br>
+    <div class="col-md-3 col-md-offset-1"><button type="button" ng-click="query()" class="btn btn-primary">查询</button></div>
+    <div class="col-md-7 col-md-offset-1" style="color:red">{{log}}</div>    
+  </div>
+</div>
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">键列表</h4>
+      <table class="table table-condensed" style="word-break:break-all; word-wrap:break-all;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="text-align:center;">id</th>
+            <th style="text-align:center;">user</th>
+            <th style="text-align:center;">host</th>
+            <th style="text-align:center;">db</th>
+            <th style="text-align:center;">command</th>
+            <th style="text-align:center;">time</th>
+            <th style="text-align:center;">state</th>
+            <th style="text-align:center;width:30%">info</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="processlist in processlists">
+            <td style="text-align:center;">{{$index+1}}</td>
+            <td style="text-align:center;">{{processlist.id}}</td>
+            <td style="text-align:center;">{{processlist.user}}</td>
+            <td style="text-align:center;">{{processlist.host}}</td>
+            <td style="text-align:center;">{{processlist.db}}</td>
+            <td style="text-align:center;">{{processlist.command}}</td>
+            <td style="text-align:center;">{{processlist.time}}</td>
+            <td style="text-align:center;">{{processlist.state}}</td>
+            <td style="text-align:center;width:30%">{{processlist.info}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <div class="row">
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="RedisResource">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="RedisResource">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn'>{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RedisResource">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RedisResource">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div> -->
+  </div>
+</div>
+

@@ -1,0 +1,66 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">用户管理</a></li>
+		  <li><a ui-sref="UsersList">用户列表</a></li>
+		  <li class="active">用户新增</li>
+		</ol>
+	</div>
+</div>
+<h1>用户新增</h1>
+<p>
+<div class="row">
+    <div class="col-md-12">
+      <form name="myform" role="form" id="templatemo-preferences-form">
+        <div class="row">
+          <div class="col-md-6 margin-bottom-15">
+            <label for="customerCode" class="control-label">账户名称</label>
+            <input type="text" class="form-control" id="customerCode" value="" required ng-model="account">
+          </div>
+          <div class="col-md-6 margin-bottom-15">
+            <label for="customerName" class="control-label">密码</label>
+            <input type="password" class="form-control" id="customerName" value="" required ng-model="password" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 margin-bottom-15">
+            <label for="projectCode" class="control-label">真实姓名</label>
+            <input type="text" class="form-control" id="projectCode" value="" required ng-model="userName">
+          </div>
+          <div class="col-md-6 margin-bottom-15">
+            <label for="projectCode" class="control-label">所在单位/部门</label>
+            <input type="text" class="form-control" id="projectCode" value="" required ng-model="unitName">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 margin-bottom-15">
+            <label for="projectCode" class="control-label">移动电话号码</label>
+            <div class="{{telclass}}">
+	            <input type="text" class="form-control" id="projectCode" value="" ng-pattern="phoneNumberPattern" required ng-model="telephone" ng-blur="checktel()">
+			</div>
+          </div>
+          <div class="col-md-6 margin-bottom-15">
+            <label for="projectCode" class="control-label">所属角色列表</label>
+            <select class="form-control margin-bottom-15" data-live-search="true" data-size="5" ng-model="role" >
+              <option ng-repeat="x in roleslist" value="{{$index}}">{{x.roleName}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 margin-bottom-15">
+            <label for="notes">备注</label>
+            <textarea class="form-control" rows="3" id="notes" ng-model="remark"></textarea>
+          </div>
+        </div>
+      
+        <div class="row templatemo-form-buttons">
+          <div class="col-md-12">
+            <button ng-click="save()" class="btn btn-primary"  ng-disabled="myform.$invalid ||myform.$pristine">保存</button>
+            <button type="reset" class="btn btn-default">重置</button>    
+            <button ui-sref="UsersList" class="btn btn-default">取消</button>    
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</p>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.report.dao.LogMonitorDAO" >
+  	
+	<select id="queryNissp" resultType="java.util.HashMap">
+	<![CDATA[
+		select id as NISSP_ID,NAME AS NISSP_NAME from cs_cf_nissp where status='NORMAL'
+	]]>
+	</select>
+	
+	<select id="querySubsystem" resultType="java.util.HashMap">
+	<![CDATA[
+		select 
+			s.id as ID,
+			s.SUBSYSTEM_CODE as SUBSYSTEM_CODE,
+			s.SUBSYSTEM_NAME as SUBSYSTEM_NAME 
+		from cs_dt_subsystem s 
+		where s.status='NORMAL' and s.NISSP_ID= #{nisspId}
+	]]>
+	</select>
+
+	
+</mapper>

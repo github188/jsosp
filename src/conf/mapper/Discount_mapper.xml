@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.DiscountDAO">
+
+	<select id="list" resultType="java.util.HashMap">
+		SELECT DISTINCT
+			dd.park_code as PARK_CODE,
+			p.park_name as PARK_NAME,
+			odt.CAR_NO AS CAR_NO,
+			odt.SEQID AS SEQID,
+			dprd.RETCODE AS RETCODE,
+			dprd.RETMSG AS RETMSG,
+			odrt.RESPONSE_TIME AS RESPONSE_TIME,
+			dprd.RETURN_TIME AS RETURN_TIME
+		FROM
+			jscsp_order_discount_ret_data odrt
+		right JOIN (
+			SELECT
+				SEQID,
+				CAR_NO,
+				JSCSP_ORDER_RESPONSE_IP
+			FROM
+				jscsp_order_discount_data
+			WHERE
+				1 = 1
+			<if test='starttime != "" '>  
+				AND DATE_FORMAT(RESPONSE_TIME, '%Y-%m-%d') >= #{starttime}
+		    </if>
+			<if test='endtime != "" '>  
+				AND #{endtime} >= DATE_FORMAT(RESPONSE_TIME, '%Y-%m-%d')
+		    </if>
+			<if test='carno != "" '>  
+				and CAR_NO like concat('%', #{carno}, '%')
+		    </if>
+		) odt ON odrt.SEQID = odt.SEQID
+		left JOIN jsifs_discount_pre_return_data dprd ON dprd.SEQID = odt.SEQID
+		left JOIN serverinfo si ON si.ip = odt.JSCSP_ORDER_RESPONSE_IP
+		left join jsifs_discount_data dd on dd.SEQID = odt.SEQID
+		left join cs_dt_park p on dd.PARK_CODE=p.park_code
+		<if test='retCode == "0" '>  
+			where dprd.RETCODE != 0
+	    </if>
+		<if test='retCode == "1" '>  
+			where dprd.RETCODE = 0
+	    </if>
+		limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="queryCounts" resultType="java.util.HashMap">
+		SELECT
+			count(1) as COUNTS
+		FROM
+			jscsp_order_discount_ret_data odrt
+		right JOIN (
+			SELECT
+				SEQID,
+				CAR_NO,
+				JSCSP_ORDER_RESPONSE_IP
+			FROM
+				jscsp_order_discount_data
+			WHERE
+				1 = 1
+			<if test='starttime != "" '>  
+				AND DATE_FORMAT(RESPONSE_TIME, '%Y-%m-%d') >= #{starttime}
+		    </if>
+			<if test='endtime != "" '>  
+				AND #{endtime} >= DATE_FORMAT(RESPONSE_TIME, '%Y-%m-%d')
+		    </if>
+			<if test='carno != "" '>  
+				and CAR_NO like concat('%', #{carno}, '%')
+		    </if>
+		) odt ON odrt.SEQID = odt.SEQID
+		left JOIN jsifs_discount_pre_return_data dprd ON dprd.SEQID = odt.SEQID
+		left JOIN serverinfo si ON si.ip = odt.JSCSP_ORDER_RESPONSE_IP
+		left join jsifs_discount_data dd on dd.SEQID = odt.SEQID
+		left join cs_dt_park p on dd.PARK_CODE=p.park_code
+		<if test='retCode == "0" '>  
+			where dprd.RETCODE != 0
+	    </if>
+		<if test='retCode == "1" '>  
+			where dprd.RETCODE = 0
+	    </if>
+	</select>
+	
+	<select id="queryById" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			concat(
+				serip1.serverName,
+				'(',
+				jscspos.JSCSP_ORDER_RESPONSE_IP,
+				')'
+			) AS NODE1,
+			jscspos.JSCSP_ORDER_HEARDER_INFO AS NODE1INFO,
+			concat(
+				serip2.serverName,
+				'(',
+				jsifss.JSIFS_RESPONSE_IP,
+				')'
+			) AS NODE2,
+			jsifss.JSIFS_HEARDER_INFO AS NODE2INFO,
+		concat(
+				serip5.serverName,
+				'(',
+				jscsppr.JSIFS_RESPONSE_IP,
+				')'
+			) AS NODE3,
+			jscsppr.JSIFS_HEARDER_INFO AS NODE3INFO,
+			concat(
+				serip3.serverName,
+				'(',
+				jsifsr.JSIFS_RETURN_IP,
+				')'
+			) AS NODE4,
+			jsifsr.JSIFS_HEARDER_RET_INFO AS NODE4INFO,
+			concat(
+				serip4.serverName,
+				'(',
+				jscspr.JSCSP_ORDER_RESPONSE_IP,
+				')'
+			) AS NODE5,
+			jscspr.JSCSP_ORDER_HEARDER_INFO AS NODE5INFO,
+		
+			jscsppr.CID,
+			bs. NAME,
+			jscsppr.PARK_CODE,
+			pk.park_name,
+			jsifsr.RETMSG
+		FROM
+			jscsp_order_discount_data jscspos
+		LEFT JOIN jsifs_discount_data jsifss ON jscspos.SEQID = jsifss.SEQID
+		LEFT JOIN jsifs_discount_pre_return_data jsifsr ON jscspos.SEQID = jsifsr.SEQID
+		LEFT JOIN jscsp_order_discount_ret_data jscspr ON jscspos.SEQID = jscspr.SEQID
+		LEFT JOIN jsifs_discount_pre_resp_data jscsppr ON jscspos.SEQID = jscsppr.SEQID
+		LEFT JOIN cs_cf_businesser bs ON bs. CODE = jscsppr.CID
+		LEFT JOIN cs_dt_park pk ON jscsppr.PARK_CODE = pk.park_code
+		LEFT JOIN serverinfo serip1 ON jscspos.JSCSP_ORDER_RESPONSE_IP = serip1.ip
+		LEFT JOIN serverinfo serip2 ON jsifss.JSIFS_RESPONSE_IP = serip2.ip
+		LEFT JOIN serverinfo serip3 ON jsifsr.JSIFS_RETURN_IP = serip3.ip
+		LEFT JOIN serverinfo serip4 ON jscspr.JSCSP_ORDER_RESPONSE_IP = serip4.ip
+		LEFT JOIN serverinfo serip5 ON jscsppr.JSIFS_RESPONSE_IP = serip5.ip
+		where jsifss.seqid= #{id} order by jsifss.CHECK_TIME desc
+	    LIMIT 1
+	]]>
+	</select>
+	
+</mapper>

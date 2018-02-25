@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.report.dao.LockWaitDAO" >
+  	
+	<select id="query" resultType="java.util.HashMap">
+	<![CDATA[
+		select l.* from ( select
+		 'Blocker' role,
+		    p.id,
+		    p.user,
+		    left(p.host, locate(':', p.host) - 1) host,
+		    tx.trx_id,
+		    tx.trx_state,
+		    tx.trx_started,
+		 timestampdiff(second, tx.trx_started, now()) duration,
+		 lo.lock_mode,
+		 lo.lock_type,
+		 lo.lock_table,
+		 lo.lock_index,
+		    tx.trx_query,
+		  lw.requesting_thd_id Blockee_id,
+		  lw.requesting_trx_id Blockee_trx
+		from
+		    information_schema.innodb_trx tx,
+		    information_schema.innodb_lock_waits lw,
+		 information_schema.innodb_locks lo,
+		    information_schema.processlist p
+		where
+		    lw.blocking_trx_id = tx.trx_id
+		 and p.id = tx.trx_mysql_thread_id
+		 and lo.lock_id = lw.blocking_lock_id
+		union
+		select
+		    'Blockee' role,
+		    p.id,
+		    p.user,
+		    left(p.host, locate(':', p.host) - 1) host,
+		    tx.trx_id,
+		    tx.trx_state,
+		    tx.trx_started,
+		 timestampdiff(second, tx.trx_started, now()) duration,
+		 lo.lock_mode,
+		 lo.lock_type,
+		 lo.lock_table,
+		 lo.lock_index,
+		    tx.trx_query,
+		  null,
+		  null
+		from
+		    information_schema.innodb_trx tx,
+		    information_schema.innodb_lock_waits lw,
+		 information_schema.innodb_locks lo,
+		    information_schema.processlist p
+		where
+		    lw.requesting_trx_id = tx.trx_id
+		 and p.id = tx.trx_mysql_thread_id
+		 and lo.lock_id = lw.requested_lock_id) l
+		 order by role desc, trx_state desc
+	]]>
+	</select>
+	
+	<select id="slowsql" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			start_time as start_time,
+			user_host as user_host,
+			query_time as query_time ,
+			lock_time as lock_time,
+			rows_sent as rows_sent,
+			rows_examined as rows_examined,
+			db as db,
+			last_insert_id as last_insert_id,
+			server_id as server_id,
+			sql_text as sql_text
+		FROM
+			mysql.slow_log_view
+	]]>
+	</select>
+	
+	<select id="processlist" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID as ID,
+			USER as USER,
+			HOST as HOST ,
+			DB as DB,
+			COMMAND as COMMAND,
+			TIME as TIME,
+			STATE as STATE,
+			INFO AS INFO
+		FROM
+			information_schema.processlist
+		where command<>'Sleep'
+	]]>
+	</select>
+	
+	<select id="query2" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT 
+			p2.`HOST` Blockedhost, 
+			p2.`USER` BlockedUser, 
+			r.trx_id BlockedTrxId, 
+			r.trx_mysql_thread_id BlockedThreadId, 
+			TIMESTAMPDIFF( 
+			SECOND, 
+			r.trx_wait_started, 
+			CURRENT_TIMESTAMP 
+			) WaitTime, 
+			r.trx_query BlockedQuery, 
+			l.lock_table BlockedTable, 
+			m.`lock_mode` BlockedLockMode, 
+			m.`lock_type` BlockedLockType, 
+			m.`lock_index` BlockedLockIndex, 
+			m.`lock_space` BlockedLockSpace, 
+			m.lock_page BlockedLockPage, 
+			m.lock_rec BlockedLockRec, 
+			m.lock_data BlockedLockData, 
+			p.`HOST` blocking_host, 
+			p.`USER` blocking_user, 
+			b.trx_id BlockingTrxid, 
+			b.trx_mysql_thread_id BlockingThreadId, 
+			b.trx_query BlockingQuery, 
+			l.`lock_mode` BlockingLockMode, 
+			l.`lock_type` BlockingLockType, 
+			l.`lock_index` BlockingLockIndex, 
+			l.`lock_space` BlockingLockSpace, 
+			l.lock_page BlockingLockPage, 
+			l.lock_rec BlockingLockRec, 
+			l.lock_data BlockingLockData, 
+			IF (p.COMMAND = 'Sleep', CONCAT(p.TIME,' seconds'), 0) idel_in_trx 
+			FROM 
+			information_schema.INNODB_LOCK_WAITS w 
+			INNER JOIN information_schema.INNODB_TRX b ON b.trx_id = w.blocking_trx_id 
+			INNER JOIN information_schema.INNODB_TRX r ON r.trx_id = w.requesting_trx_id 
+			INNER JOIN information_schema.INNODB_LOCKS l ON w.blocking_lock_id = l.lock_id AND l.`lock_trx_id`=b.`trx_id` 
+			INNER JOIN information_schema.INNODB_LOCKS m ON m.`lock_id`=w.`requested_lock_id` AND m.`lock_trx_id`=r.`trx_id` 
+			INNER JOIN information_schema. PROCESSLIST p ON p.ID = b.trx_mysql_thread_id 
+			INNER JOIN information_schema. PROCESSLIST p2 ON p2.ID = r.trx_mysql_thread_id 
+			ORDER BY 
+			WaitTime DESC;
+	]]>
+	</select>
+	
+	<insert id="insertCloudLockWait" parameterType="java.util.List">
+	   INSERT INTO rds_cloud_lock_info (role,id,user,host,trx_id,trx_state, trx_started,duration,lock_mode,lock_type,lock_table,lock_index,trx_query,blockee_id,blockee_trx) 
+	   	VALUES 
+	   	 <foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.role},#{item.id},#{item.user},#{item.host},#{item.trx_id},#{item.trx_state},#{item.trx_started},#{item.duration},
+       		 #{item.lock_mode},#{item.lock_type},#{item.lock_table},#{item.lock_index},#{item.trx_query},#{item.blockee_id},#{item.blockee_trx})  
+    	</foreach>  
+  	</insert>
+	<insert id="insertSmLockWait" parameterType="java.util.List">
+	   INSERT INTO rds_sm_lock_info (role,id,user,host,trx_id,trx_state, trx_started,duration,lock_mode,lock_type,lock_table,lock_index,trx_query,blockee_id,blockee_trx) 
+	   	VALUES 
+	   	 <foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.role},#{item.id},#{item.user},#{item.host},#{item.trx_id},#{item.trx_state},#{item.trx_started},#{item.duration},
+       		 #{item.lock_mode},#{item.lock_type},#{item.lock_table},#{item.lock_index},#{item.trx_query},#{item.blockee_id},#{item.blockee_trx})  
+    	</foreach>  
+  	</insert>
+	<insert id="insertLockWait" parameterType="java.util.List">
+	   INSERT INTO rds_lock_info (role,id,user,host,trx_id,trx_state, trx_started,duration,lock_mode,lock_type,lock_table,lock_index,trx_query,blockee_id,blockee_trx) 
+	   	VALUES 
+	   	 <foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.role},#{item.id},#{item.user},#{item.host},#{item.trx_id},#{item.trx_state},#{item.trx_started},#{item.duration},
+       		 #{item.lock_mode},#{item.lock_type},#{item.lock_table},#{item.lock_index},#{item.trx_query},#{item.blockee_id},#{item.blockee_trx})  
+    	</foreach>  
+  	</insert>
+	<insert id="insertZyLockWait" parameterType="java.util.List">
+	   INSERT INTO rds_zy_lock_info (role,id,user,host,trx_id,trx_state, trx_started,duration,lock_mode,lock_type,lock_table,lock_index,trx_query,blockee_id,blockee_trx) 
+	   	VALUES 
+	   	 <foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.role},#{item.id},#{item.user},#{item.host},#{item.trx_id},#{item.trx_state},#{item.trx_started},#{item.duration},
+       		 #{item.lock_mode},#{item.lock_type},#{item.lock_table},#{item.lock_index},#{item.trx_query},#{item.blockee_id},#{item.blockee_trx})  
+    	</foreach>  
+  	</insert>
+	<insert id="insertbgy2LockWait" parameterType="java.util.List">
+	   INSERT INTO rds_bgy_lock_info (role,id,user,host,trx_id,trx_state, trx_started,duration,lock_mode,lock_type,lock_table,lock_index,trx_query,blockee_id,blockee_trx) 
+	   	VALUES 
+	   	 <foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.role},#{item.id},#{item.user},#{item.host},#{item.trx_id},#{item.trx_state},#{item.trx_started},#{item.duration},
+       		 #{item.lock_mode},#{item.lock_type},#{item.lock_table},#{item.lock_index},#{item.trx_query},#{item.blockee_id},#{item.blockee_trx})  
+    	</foreach>  
+  	</insert>
+	<insert id="insertbgy2LockWait2" parameterType="java.util.List">
+	   INSERT INTO rds_bgy_lock_info2 (Currenttime,Blockedhost,BlockedUser,BlockedTrxId,BlockedThreadId,WaitTime,BlockedQuery,BlockedTable
+	   		,BlockedLockMode,BlockedLockType,BlockedLockIndex,BlockedLockSpace,BlockedLockPage,BlockedLockRec,BlockedLockData,blocking_host,
+	   		blocking_user,BlockingTrxid,BlockingThreadId,BlockingQuery,BlockingLockMode,BlockingLockType,BlockingLockIndex,BlockingLockSpace,
+	   		BlockingLockPage,BlockingLockRec,BlockingLockData,idel_in_trx) 
+	   	VALUES 
+	   	 <foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.Currenttime},#{item.Blockedhost},#{item.BlockedUser},#{item.BlockedTrxId},#{item.BlockedThreadId},#{item.WaitTime},#{item.BlockedQuery},#{item.BlockedTable},
+       		 #{item.BlockedLockMode},#{item.BlockedLockType},#{item.BlockedLockIndex},#{item.BlockedLockSpace},#{item.BlockedLockPage},#{item.BlockedLockRec},#{item.BlockedLockData}
+       		 ,#{item.blocking_host},#{item.blocking_user},#{item.BlockingTrxid},#{item.BlockingThreadId},#{item.BlockingQuery},#{item.BlockingLockMode}
+       		 ,#{item.BlockingLockType},#{item.BlockingLockIndex},#{item.BlockingLockSpace},#{item.BlockingLockPage},#{item.BlockingLockRec},#{item.BlockingLockData},#{item.idel_in_trx})  
+    	</foreach>  
+  	</insert>
+	
+</mapper>

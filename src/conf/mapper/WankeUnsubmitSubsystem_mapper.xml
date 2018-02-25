@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.WankeUnsubmitSubsystemDAO">
+
+	<select id="list" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID as ID,
+			DATA_UPLOAD_TIME as CHECK_DATE,
+			DATA_UPLOAD_TIME as CHECK_TIME,
+			count(1) as SUBSYSTEMS
+		FROM
+			mas_data_upload_statistics
+	    group by DATA_UPLOAD_TIME  
+	    order by DATA_UPLOAD_TIME desc
+		limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<select id="queryCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) as COUNTS
+		FROM
+			mas_data_upload_statistics
+	]]>
+	</select>
+	
+	<select id="queryDataUpload" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(su.NAME) as COUNTS
+		FROM
+			np_cf_subsystem su
+		WHERE
+			su.id NOT IN (
+				SELECT DISTINCT
+					(subsystem_id)
+				FROM
+					np_dt_park_in pi
+				WHERE
+					pi.create_time >= #{start} and pi.create_time <= #{end}
+				AND pi.WK_SYNC_FLAG = 2
+			)
+		AND su. CODE LIKE "000000%"
+	]]>
+	</select>
+	
+	<insert id="insert" parameterType="String">
+		 INSERT INTO wanke_unsubmit_system_records (id, check_time, check_date, subsystems) VALUES (#{id},sysdate(),#{check_date},#{subsystems});
+  	</insert>
+	
+</mapper>

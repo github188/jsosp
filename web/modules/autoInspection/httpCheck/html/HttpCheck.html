@@ -1,0 +1,70 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化巡检</a></li>
+		  <li class="active">HTTP服务检测</li>
+		</ol>
+	</div>
+</div>
+<h1>HTTP服务检测</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="HttpCheck">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3 margin-bottom-15">
+    <label for="customerCode" class="control-label">HTTP服务选择</label>
+      <select class="form-control" ng-model="httpname" ng-options="Http.platform_name for Http in Httpresult" required></select>
+  </div>
+  <div class="col-md-3 margin-bottom-15">
+  	 <br>
+    <button type="button" ng-click="query()" class="btn btn-primary">查询</button>
+  </div>
+</div>
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">服务列表</h4>
+      <table class="table table-condensed" style="word-break:break-all; word-wrap:break-all;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="text-align:center;">检测时间</th>
+            <th style="text-align:center;">服务名称</th>
+            <th style="text-align:center;width:30%">请求URL</th>
+<!--             <th style="text-align:center;">功能名称</th> -->
+            <th style="text-align:center;">巡检结果</th>
+            <th style="text-align:center;">HTTP状态码</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-mouseover="tableblur($index)" ng-mouseleave="tableleave()" ng-repeat="Http in Https track by $index">
+            <td style="{{Http.style}};text-align:center;">{{$index+1}}</td>
+            <td style="{{Http.style}};text-align:center;">{{Http.oper_time}}</td>
+            <td style="{{Http.style}};text-align:center;">{{Http.platform_name}}</td>
+            <td style="{{Http.style}};text-align:center;">{{Http.request_url}}</td>
+<!--             <td style="{{Http.style}};text-align:center;">{{Http.allocate_item}}</td> -->
+            <td style="{{Http.style}};text-align:center;">{{Http.allocate_value}}</td>
+            <td style="{{Http.style}};text-align:center;">{{Http.check_status}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="HttpCheck" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="HttpCheck" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="HttpCheck" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="HttpCheck" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.RDSSlowLogDAO">
+
+	<select id="list" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID as ID,
+			DB_INSTANCE_ID as DB_INSTANCE_ID,
+			EXECUTE_START_TIME as EXECUTE_START_TIME,
+			SQL_PARAM as SQL_PARAM,
+			CLIENT_IP as CLIENT_IP,
+			DB_NAME as DB_NANME,
+			QUERY_TIMES as QUERY_TIMES,
+			LOCK_TIMES as LOCK_TIMES,
+			PARSER_ROW_COUNTS as PARSER_ROW_COUNTS,
+			RETURN_ROW_COUNTS as RETURN_ROW_COUNTS
+		FROM
+			mas_rds_slow_log
+			
+	]]>
+	<if test='rdsHosts != "" '>  
+		where DB_INSTANCE_ID= #{rdsHosts} 
+    </if>
+    order by QUERY_TIMES desc
+	limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="listRDS" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			distinct DB_INSTANCE_ID as DB_INSTANCE_ID
+		FROM
+			mas_rds_slow_log
+	]]>
+	</select>
+	
+	<select id="queryCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) as COUNTS
+		FROM
+			mas_rds_slow_log
+	]]>
+	<if test='rdsHosts != "" '>  
+		where DB_INSTANCE_ID= #{rdsHosts} 
+    </if>
+	</select>
+	
+</mapper>

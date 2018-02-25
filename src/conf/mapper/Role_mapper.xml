@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.security.role.dao.RoleDao" >
+  	
+	<insert id="addRole" parameterType="String">
+		 INSERT INTO sec_role (id, role_name,create_user, create_time, remark) VALUES (#{id},#{roleName},'',sysdate(),#{remark});
+  	</insert>
+
+	<select id="queryRolelists" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			id AS ID,
+			role_name AS ROLENAME,
+			remark AS REMARK,
+			create_time AS CREATETIME
+		FROM
+			sec_role
+		where role_name LIKE CONCAT('%', #{roleName}, '%') limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<select id="queryRolesCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) AS ROLECOUNTS
+		FROM
+			sec_role 
+		where role_name LIKE CONCAT('%', #{roleName}, '%') 
+	]]>
+	</select>
+
+	<insert id="addRoleUser" parameterType="String">
+		INSERT INTO sec_user_role (id, user_id, role_id, create_user, create_time) VALUES
+			(#{id},#{userId},#{roleId},'',sysdate());
+  	</insert>
+</mapper>

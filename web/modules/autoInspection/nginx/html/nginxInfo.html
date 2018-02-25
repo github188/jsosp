@@ -1,0 +1,173 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化巡检</a></li>
+		  <li class="active">IP访问次数</li>
+		</ol>
+	</div>
+</div>
+<h1>IP访问次数</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="NginxInfo">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div>
+<!-- <div class="row">
+  <div class="col-md-4">
+	  <div class="row">
+		   <ng-echarts style="height:30rem;" class="col-md-12 echarts" ec-config="pieConfig1" ec-option="option1" ></ng-echarts>
+	  </div>
+  </div>
+  <div class="col-md-4">
+	  <div class="row">
+		   <ng-echarts style="height:30rem;" class="col-md-12 echarts" ec-config="pieConfig2" ec-option="option2" ></ng-echarts>
+	  </div>
+  </div>
+  <div class="col-md-4 margin-bottom-15">
+	  <div class="row">
+		  <div class="col-md-8">
+		    <label for="projectName" class="control-label">检测开始时间</label>
+		    <p class="input-group">
+		      <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd HH:mm:ss" ng-model="dt" is-open="opened" close-text="Close" required/>
+		      <span class="input-group-btn">
+		        <button type="button" class="btn btn-default" ng-click="openCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+		      </span>
+		    </p>
+		   </div>
+	  </div>
+	  <div class="row">
+		  <div class="col-md-8">
+		    <label for="projectName" class="control-label">检测结束时间</label>
+		    <p class="input-group">
+		      <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd HH:mm:ss" ng-model="dt1" is-open="opened1" close-text="Close" required/>
+		      <span class="input-group-btn">
+		        <button type="button" class="btn btn-default" ng-click="openCalendar1($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+		      </span>
+		    </p>
+		  </div>
+	  </div>
+	  <div class="row">
+		  <div class="col-md-8">
+		    <label for="projectName" class="control-label">来源ip</label>
+		    <input type="text" class="form-control" id="customerCode" value="" required ng-model="sourceip">
+		  </div>
+		  <div class="col-md-2">
+		  	<br>
+		    <button ng-click="query()" class="btn btn-primary">查询</button>
+		  </div>
+	  </div>
+  </div>
+</div> -->
+<div class="row" style="margin-top:1%">
+	  <div class="col-md-4">
+	    <label for="projectName" class="control-label">检测开始时间</label>
+	    <p class="input-group">
+	      <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd HH:mm:ss" ng-model="dt" is-open="opened" close-text="Close" required/>
+	      <span class="input-group-btn">
+	        <button type="button" class="btn btn-default" ng-click="openCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+	      </span>
+	    </p>
+	   </div>
+	  <div class="col-md-4">
+	    <label for="projectName" class="control-label">检测结束时间</label>
+	    <p class="input-group">
+	      <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd HH:mm:ss" ng-model="dt1" is-open="opened1" close-text="Close" required/>
+	      <span class="input-group-btn">
+	        <button type="button" class="btn btn-default" ng-click="openCalendar1($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+	      </span>
+	    </p>
+	  </div>
+	  <div class="col-md-2">
+	    <label for="projectName" class="control-label">来源ip</label>
+	    <input type="text" class="form-control" id="customerCode" value="" required ng-model="sourceip">
+	  </div>
+	  <div class="col-md-2">
+	  	<br>
+	    <button ng-click="query()" class="btn btn-primary">查询</button>
+	  </div>	  	   
+</div>
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <!-- <div class="">
+      <h4 class="margin-bottom-15">服务列表</h4>
+      <table class="table table-condensed" style="word-break:break-all; word-wrap:break-all;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="text-align:center;">检测时间</th>
+            <th style="text-align:center;">nginx主机ip</th>
+            <th style="text-align:center;">nginx主机名</th>
+            <th style="text-align:center;">来源ip</th>
+            <th style="text-align:center;">请求次数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="nginx in nginxs">
+            <td style="text-align:center;">{{$index+1}}</td>
+            <td style="text-align:center;">{{nginx.check_time}}</td>
+            <td style="text-align:center;">{{nginx.host_ip}}</td>
+            <td style="text-align:center;">{{nginx.host_name}}</td>
+            <td style="text-align:center;">{{nginx.acc_ip}}</td>
+            <td style="text-align:center;">{{nginx.acc_times}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="NginxInfo">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="NginxInfo">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn'>{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="NginxInfo">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="NginxInfo">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div> -->
+  </div>
+</div>
+<div class="row margin-bottom-30">
+<!-- 	<ng-echarts style="height:30rem;" class="col-md-6 echarts" ec-config="pieConfig1" ec-option="option1" ></ng-echarts> -->
+    <ng-echarts style="height:50rem;" class="col-md-6 echarts" ec-config="pieConfig2" ec-option="option2" ></ng-echarts>
+	<div class="col-md-6">
+	    <div class="">
+	      <h4 class="margin-bottom-15">IP访问次数</h4>
+	      <table class="table table-condensed" style="word-break:break-all; word-wrap:break-all;">
+	        <thead>
+	          <tr>
+	            <th>#</th>
+	            <th style="text-align:center;">检测时间</th>
+	            <th style="text-align:center;">nginx主机ip</th>
+	            <th style="text-align:center;">nginx主机名</th>
+	            <th style="text-align:center;">来源ip</th>
+	            <th style="text-align:center;">请求次数</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr ng-mouseover="tableblur($index)" ng-mouseleave="tableleave()" ng-repeat="nginx in nginxs track by $index">
+	            <td style="{{nginx.style}};text-align:center;">{{$index+1}}</td>
+	            <td style="{{nginx.style}};text-align:center;">{{nginx.check_time}}</td>
+	            <td style="{{nginx.style}};text-align:center;">{{nginx.host_ip}}</td>
+	            <td style="{{nginx.style}};text-align:center;">{{nginx.host_name}}</td>
+	            <td style="{{nginx.style}};text-align:center;">{{nginx.acc_ip}}</td>
+	            <td style="{{nginx.style}};text-align:center;">{{nginx.acc_times}}</td>
+	          </tr>
+	        </tbody>
+	      </table>
+	    </div>
+	    <div class="row">
+	      <ul class="pagination pull-right">
+	        <li class="enable" ng-click="first()"><a ui-sref="NginxInfo" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">首页</a></li>
+	        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="NginxInfo" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+	
+	        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+	
+	        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="NginxInfo" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+	        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="NginxInfo" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+	      </ul>
+	    </div>
+	  </div>    
+</div>

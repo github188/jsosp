@@ -1,0 +1,72 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化巡检</a></li>
+		  <li class="active">API数据</li>
+		</ol>
+	</div>
+</div>
+<h1>API数据</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="ApiData">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 margin-bottom-15">
+    <label for="customerCode" class="control-label">Redis选择</label>
+      <select class="form-control" ng-model="apiname" ng-options="api.projectName for api in apiresult" required></select>
+  </div>
+  <div class="col-md-3 margin-bottom-15">
+  	 <br>
+    <button type="button" ng-click="query()" class="btn btn-primary">查询</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">API检测列表</h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>检测时间</th>
+            <th>项目名称</th>
+            <th>项目编号</th>
+            <th>业务指令</th>
+            <th>请求时间</th>
+            <th>返回Code</th>
+            <th>返回Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-mouseover="tableblur($index)" ng-mouseleave="tableleave()" ng-repeat="api in apis track by $index">
+            <td style="{{api.style}}">{{$index+1}}</td>
+            <td style="{{api.style}}">{{api.check_time}}</td>
+            <td style="{{api.style}}">{{api.project_name}}</td>
+            <td style="{{api.style}}">{{api.project_code}}</td>
+            <td style="{{api.style}}">{{api.service_id}}</td>
+            <td style="{{api.style}}">{{api.request_time}}</td>
+            <td style="{{api.style}}">{{api.msg_code}}</td>
+            <td style="{{api.style}}">{{api.msg_desc}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="ApiData" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="ApiData" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="ApiData" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="ApiData" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+

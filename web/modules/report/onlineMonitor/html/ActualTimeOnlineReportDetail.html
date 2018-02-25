@@ -1,0 +1,68 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb">
+		  <li><a ui-sref="#">项目在线率管理</a></li>
+		  <li class="active">实时在线情况</li>
+		</ol>
+		<h1>实时离线项目</h1>
+	</div>
+  <div class="col-md-5" style="margin-top:6%">
+    <ul class="nav nav-pills pull-right">
+      <li class="label label-info"><a style="color:black" ui-sref="ActualTimeOnlineReport">离线项目数 <span class="badge">{{counts}}</span></a></li>
+    </ul>          
+  </div>
+</div> 
+
+ <div class="row">
+  <div class="col-md-2 margin-bottom-15">
+    <label for="customerCode" class="control-label">平台选择</label>
+      <select class="form-control" ng-model="platformid" ng-options="platform.name for platform in platforms" required></select>
+  </div>
+  
+  <div class="col-md-10 margin-bottom-15">
+    <br>
+    <button type="button" ng-click="query()" class="btn btn-primary">查询(轮询)</button><span style="color:red">{{msg}}</span>
+  </div>
+</div>
+<!-- <div class="row">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="OnlineProjectDetail">记录数 <span class="badge">{{counts}}</span></a></li>
+    </ul>          
+  </div>
+</div> -->
+	
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <div class="col-md-12 ">
+      <h4 class="margin-bottom-15">离线项目表&nbsp; &nbsp;<button type="button" ng-click="exportOffline()" class="btn btn-primary">导出</button></h4>
+      <table class="table table-hover table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th style="text-align:left;">#</th>
+            <th style="text-align:left;">平台名称</th>
+            <th style="text-align:left;">项目名称</th>
+            <th style="text-align:left;">项目编号</th>
+            <th style="text-align:left;">事件名称</th>
+            <th style="text-align:left;">发生时间</th>
+            <th style="text-align:left;">离线时长</th>
+            <th style="text-align:left;">处理</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="project in projects">
+            <td style="text-align:left;">{{$index+1}}</td>
+            <td style="text-align:left;">{{project.platform}}</td>
+            <td style="text-align:left;">{{project.name}}</td>
+            <td style="text-align:left;">{{project.code}}</td>
+            <td style="text-align:left;">{{project.event_name}}</td>
+            <td style="text-align:left;">{{project.event_time}}</td>
+            <td style="text-align:left;">{{project.offtimes}}</td>
+            <td style="text-align:left;"><a ng-click="edit($index)" class="btn btn-default btn-xs">处理</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+

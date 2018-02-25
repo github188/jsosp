@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.APIDataDAO">
+
+	<select id="list" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID as ID,
+			check_time as CHECK_TIME,
+			PROJECT_NAME as PROJECT_NAME,
+			PROJECT_CODE as PROJECT_CODE,
+			SERVICE_ID as SERVICE_ID,
+			REQUEST_TIME as REQUEST_TIME,
+			ELAPSED_TIME as ELAPSED_TIME,
+			MSG_CODE as MSG_CODE,
+			MSG_DESC as MSG_DESC
+		FROM
+			abnormal_api_data
+	]]>
+	<if test='projectName != "" '>  
+		where PROJECT_NAME= #{projectName} 
+    </if>
+    order by CHECK_TIME desc
+	limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="listAPI" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			distinct PROJECT_NAME as PROJECT_NAME
+		FROM
+			abnormal_api_data
+	]]>
+	</select>
+	
+	<select id="queryCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) as COUNTS
+		FROM
+			abnormal_api_data
+	]]>
+	<if test='projectName != "" '>  
+		WHERE PROJECT_NAME= #{projectName} 
+    </if>
+	</select>
+	
+</mapper>

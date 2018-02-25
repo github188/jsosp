@@ -1,0 +1,63 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化巡检</a></li>
+		  <li class="active">一键巡检</li>
+		</ol>
+	</div>
+</div>
+<h1 class=" margin-bottom-30">一键巡检</h1>
+
+<div class="container">
+  <div class="col-md-12">
+    <div class="">
+<!--       <h4 class="margin-bottom-15">一键巡检</h4> -->
+      <table class="table table-hover table-bordered margin-top-15">
+        <thead>
+          <tr>
+            <th style="text-align:center;"></th>
+            <th style="text-align:center;">检测项</th>
+            <th style="text-align:center;">检测结果</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- <tr>
+            <td style="text-align:center;"><input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="bigkey"></td>
+            <td style="text-align:center;">Redis大键监控</td>
+            <td style="text-align:center;color:#FF0000">{{bigkeyResult}}</td>
+          </tr> -->
+          <tr>
+            <td style="text-align:center;"><input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="slowlog"></td>
+            <td style="text-align:center;">RDS慢sql</td>
+            <td style="text-align:center;color:#FF0000">{{slowlogResult}}</td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="init"></td>
+            <td style="text-align:center;">Redis资源检测</td>
+            <td style="text-align:center;color:#FF0000">{{initResult}}</td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="readfile"></td>
+            <td style="text-align:center;">HTTP服务检测</td>
+            <td style="text-align:center;color:#FF0000">{{readfileResult}}</td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="api"></td>
+            <td style="text-align:center;">API数据</td>
+            <td style="text-align:center;color:#FF0000">{{apiResult}}</td>
+          </tr>
+          <!-- <tr>
+            <td style="text-align:center;"><input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="bgy"></td>
+            <td style="text-align:center;">碧桂园出入场数据</td>
+            <td style="text-align:center;color:#FF0000">{{bgyResult}}</td>
+          </tr> -->
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+		<div class="col-md-12">
+			<button class="btn btn-primary" ng-click="save()">一键巡检</button><font color="#FF0000">&nbsp;&nbsp;{{result}}</font>
+		</div>
+	</div>
+  </div>
+</div>

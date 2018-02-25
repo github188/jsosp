@@ -1,0 +1,181 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">监控管理</a></li>
+		  <li class="active">项目管理</li>
+		</ol>
+	</div>
+</div>
+<h1>项目管理</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="Project">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3 margin-bottom-15">
+    <label for="customerCode" class="control-label">平台选择</label>
+      <select class="form-control" ng-model="platformname" ng-options="platform.name for platform in platforms" required></select>
+  </div>
+  <div class="col-md-3 margin-bottom-15">
+    <label for="projectName" class="control-label">项目名称</label>
+    <input type="text" class="form-control" id="customerName" value="" required ng-model="projectname">
+  </div>
+  <div class="col-md-2 margin-bottom-15">
+    <label for="projectName" class="control-label">项目编号</label>
+    <input type="text" class="form-control" id="customerCode" value="" required ng-model="projectcode">
+  </div>
+  <div class="col-md-1 margin-bottom-15">
+    <label for="customerCode" class="control-label">是否监控</label>
+    <p>
+    <input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="watch1">监控中
+    <input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="watch2">非监控
+  </div>  
+  <div class="col-md-3 margin-bottom-15">
+    <br>
+    <div class="col-md-3 col-md-offset-1"><button ng-click="operate()" class="btn btn-primary">查询</button></div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">项目列表</h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>平台名称</th>
+            <th>项目编号</th>
+            <th>项目名</th>
+            <th>是否监控</th>
+            <th>编辑</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-mouseover="tableblur($index)" ng-mouseleave="tableleave()" ng-repeat="project in projects track by $index">
+            <td style="{{project.style}}">{{$index+1}}</td>
+            <td style="{{project.style}}">{{project.platform}}</td>
+            <td style="{{project.style}}">{{project.code}}</td>
+            <td style="{{project.style}}">{{project.name}}</td>
+            <td style="{{project.style}}">
+            	<a ng-if="!project.watch" ui-sref="Project" ng-click="play($index)">
+	          		<span class="glyphicon glyphicon-play"></span>
+	        	</a>
+            	<a ng-if="project.watch" ui-sref="Project" ng-click="pause($index)">
+	          		<span class="glyphicon glyphicon-pause"></span>
+	        	</a>
+	        </td>
+			<td style="{{project.style}}">
+            	<a ui-sref="Project" data-toggle="modal" data-target="#info" ng-click="message($index)">
+	          		<span class="glyphicon glyphicon-tasks"></span>
+	        	</a>
+	        </td>	        
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="formactdion pull-left">
+        <a class="btn btn-primary" data-toggle="modal" data-target="#add">新增</a>
+      </div>
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="Project" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="Project" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="Project" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="Project" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4  style="color:black" class="modal-title" id="myModalLabel">
+               	新增
+            </h4>
+         </div>
+         <div class="modal-body">
+			<form name="myform" role="form" id="templatemo-preferences-form1">
+				<div class="row">
+		          <div class="col-md-4 margin-bottom-15">
+		             <span class="label label-info">平台选择</span>
+		             <select class="form-control" ng-model="platform" ng-options="platform.name for platform in platforms" required>
+			            <option value="">-- 请选择平台类型 --</option> 
+			         </select>
+		          </div>
+		          <div class="col-md-4 margin-bottom-15">
+		             <span class="label label-info">子系统编号</span>
+            		 <input type="text" class="form-control" value="" required ng-model="systemcode">
+		          </div>
+		          <div class="col-md-4 margin-bottom-15">
+		             <span class="label label-info">子系统名称</span>
+            		 <input type="text" class="form-control" value="" required ng-model="systemname">
+		          </div>
+		        </div>
+			</form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" ng-disabled="myform.$invalid ||myform.$pristine" 
+            		class="btn btn-primary" data-dismiss="modal" ng-click="save()">新增</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 style="color:black" class="modal-title" id="myModalLabel">
+               	更新
+            </h4>
+         </div>
+         <div class="modal-body">
+			<form name="myform1" role="form" id="templatemo-preferences-form">
+				<div class="row">
+		          <div class="col-md-4 margin-bottom-15">
+		             <span class="label label-info">平台名称</span>
+            		 <input type="text" class="form-control" value="" required ng-model="infoplatform" disabled>
+		          </div>
+		          <div class="col-md-4 margin-bottom-15">
+		             <span class="label label-info">项目编号</span>
+            		 <input type="text" class="form-control" value="" required ng-model="infoprojectcode" disabled>
+		          </div>
+		          <div class="col-md-4 margin-bottom-15">
+		             <span class="label label-info">项目名</span>
+		             <input type="text" class="form-control" value="" required ng-model="infoprojectname" disabled>
+		          </div>
+		        </div>
+				<div class="row">
+		          <div class="col-md-11 margin-bottom-15">
+		          	 <span class="label label-info">需要接受短信的手机号码</span>
+			         <div class="row">
+			          <input style="margin-left:3%" class="form-control" type="text" required ng-model="infotels" placeholder="多个用逗号隔开">
+		          	</div>
+		          </div>
+		        </div>
+			</form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" ng-disabled="myform1.$invalid ||myform1.$pristine" 
+            		class="btn btn-primary" data-dismiss="modal" ng-click="updateInfo()">更新</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>

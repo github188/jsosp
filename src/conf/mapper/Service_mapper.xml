@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.dao.ServiceRequestDao">
+	<resultMap id="LogServiceRequestDO" type="com.jieshun.ops.model.LogServiceRequestDO">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="PROJECT_CODE" property="projectCode" jdbcType="VARCHAR" />
+		<result column="SERVICE_ID" property="serviceId" jdbcType="VARCHAR" />
+		<result column="REQUEST_TIME" property="requestTime" jdbcType="TIMESTAMP" />
+		<result column="RESPONSE_TIME" property="responseTime" jdbcType="TIMESTAMP" />
+		<result column="ELAPSED_TIME" property="elapsedTime" jdbcType="BIGINT" />
+		<result column="MSG_CODE" property="msgCode" jdbcType="VARCHAR" />
+		<result column="MSG_DESC" property="msgDesc" jdbcType="VARCHAR" />
+		<result column="SeqId" property="SeqId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="addLog" parameterType="com.jieshun.ops.model.LogServiceRequestDO">
+		INSERT INTO LOG_SERVICE_REQUEST (ID, PROJECT_CODE, SERVICE_ID,REQUEST_TIME, RESPONSE_TIME, ELAPSED_TIME,MSG_CODE,MSG_DESC,SeqId) 
+		VALUES (#{id},#{projectCode},#{serviceId},#{requestTime},#{responseTime},#{elapsedTime},#{msgCode},#{msgDesc},#{SeqId});
+	</insert>
+	<!-- 批量新增 -->
+	<insert id="batchAddLog" parameterType="java.util.List">
+		INSERT INTO LOG_SERVICE_REQUEST (ID, PROJECT_CODE, SERVICE_ID,REQUEST_TIME, RESPONSE_TIME, ELAPSED_TIME,MSG_CODE,MSG_DESC) 
+		VALUES 
+		<foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=VARCHAR},#{item.projectCode,jdbcType=VARCHAR},#{item.serviceId,jdbcType=VARCHAR},#{item.requestTime,jdbcType=TIMESTAMP},#{item.responseTime,jdbcType=TIMESTAMP},#{item.elapsedTime,jdbcType=BIGINT},#{item.msgCode,jdbcType=VARCHAR},#{item.msgDesc,jdbcType=VARCHAR});
+        </foreach>
+	</insert>
+	
+	<select id="getTokenFromDB"  parameterType="String" resultType="java.lang.String">
+		select token from cs_cf_businesser where code=#{code}
+	</select>
+</mapper>

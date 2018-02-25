@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.task.wanke.WankeDao">
+	<select id="getNoDataUploadProjects" resultType="java.util.HashMap">
+		select DISTINCT nep.code,nep.name,ndpi.records as in_count,ndpo.records as out_count from np_cf_subsystem nep 
+		LEFT JOIN
+		(select SUBSYSTEM_ID,count(0) as records from np_dt_park_in 
+		where create_time BETWEEN STR_TO_DATE(#{beginDate},'%Y-%m-%d') and now()
+		group by SUBSYSTEM_ID) ndpi on ndpi.SUBSYSTEM_ID=nep.id
+		LEFT JOIN
+		(select SUBSYSTEM_ID,count(0) as records from np_dt_park_out
+		where create_time BETWEEN STR_TO_DATE(#{beginDate},'%Y-%m-%d') and now()
+		group by SUBSYSTEM_ID) ndpo on ndpo.SUBSYSTEM_ID=nep.id
+		where nep.status='NORMAL' and nep.code like '000000%'
+		having ndpi.records is null and ndpo.records is null
+		ORDER BY nep.code asc
+	</select>
+	
+</mapper>

@@ -1,0 +1,163 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="#">API接入管理</a></li>
+  <li><a ui-sref="APIList">API接口清单</a></li>
+  <li class="active">API接口编辑</li>
+</ol>
+<h1>API接口编辑</h1>
+<p>
+<div class="row">
+    <div class="col-md-12">
+      <form role="form" id="templatemo-preferences-form">
+        <div class="row">
+          <div class="col-md-6 margin-bottom-15">
+            <label for="customerCode" class="control-label">API编号</label>
+            <input type="text" class="form-control" id="customerCode" value="0001" disabled>
+          </div>
+          <div class="col-md-6 margin-bottom-15">
+            <label for="customerName" class="control-label">协议名称</label>
+            <input type="text" class="form-control" id="customerName" value="门禁开门协议" disabled>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 margin-bottom-15">
+            <label for="projectCode" class="control-label">服务标识</label>
+            <input type="text" class="form-control" id="projectCode" value="3c.door.opendoor" disabled>
+          </div>
+          <div class="col-md-6 margin-bottom-15">
+            <label for="frontEndVersion" class="control-label">自从</label>
+            <select class="form-control margin-bottom-15" id="frontEndVersion" disabled>
+              <option>v2.0</option>
+              <option>v2.2</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 margin-bottom-15">
+            <label for="linkDate" class="control-label">接口创建日期</label>
+            <input type="date" class="form-control" id="linkDate" value="2016-03-02" disabled>
+          </div>
+          <div class="col-md-6 margin-bottom-15">
+            <label for="linkDate" class="control-label">接口最新测试日期</label>
+            <input type="date" class="form-control" id="linkDate" value="2016-03-02" disabled>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 margin-bottom-15">
+            <label for="linkMaster" class="control-label">接口参数设置</label><br>
+            <a data-toggle="modal" data-target="#setAPI" class="btn btn-primary col-md-offset-1">点击设置</a>
+          </div>
+          <div class="col-md-6 margin-bottom-15">
+            <label for="onlineStataus" class="control-label">接口使用状态</label>
+            <br>
+           <label class="radio-inline">
+            <input type="radio" name="onlineStataus" id="onlineStataus1" value="onlinie" checked> 生产用
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="onlineStataus" id="onlineStataus2" value="offline"> 未上线
+          </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 margin-bottom-15">
+            <label for="subCompany" class="control-label">接口描述</label>
+            <textarea class="form-control" rows="1">查询用户有控制权限的门禁设备信息</textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 margin-bottom-15">
+            <label for="notes">备注</label>
+            <textarea class="form-control" rows="3" id="notes"></textarea>
+          </div>
+        </div>
+      
+        <div class="row templatemo-form-buttons">
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">保存</button>
+            <button type="reset" class="btn btn-default">重置</button>    
+            <button type="cancel" class="btn btn-default">取消</button>    
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</p>
+<div style="top:10%;max-height: 66%;" class="modal fade" id="setAPI" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+               API参数设置
+            </h4>
+         </div>
+         <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 margin-bottom-15">
+              <div class="">
+                <table class="table table-striped table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th>输入<a ng-click="inputadd()" class="pull-right" style="cursor: pointer;"><span class="glyphicon glyphicon-plus"></span></a></th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody ng-init="inputs=apis.input;" >
+                    <tr ng-repeat="input in inputs">
+                      <td>{{input}}<a ng-click="inputdelete($index)" class="pull-right" style="cursor: pointer;"><span class="glyphicon glyphicon-minus"></span></a></td>
+                    </tr>
+                    <tr ng-show="show">
+                      <td>
+                        <div class="row">
+                          <div class="col-md-10 margin-bottom-10">
+                            <input ng-blur="inputblur()" type="text" class="form-control col-md-1" ng-model="input1"><span ng-show="inputshow1" style="color:red">输入不能为空</span>
+                          </div>
+                          <div class="col-md-2 margin-bottom-10">
+                            <a ng-click="save1()" style="cursor: pointer;"><span class="glyphicon glyphicon-plus pull-right"></span></a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-md-6 margin-bottom-15">
+              <div class="">
+                <table class="table table-striped table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th>输出<a ng-click="outputadd()" class="pull-right" style="cursor: pointer;"><span class="glyphicon glyphicon-plus"></span></a></th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody ng-init="outputs=apis.output;" >
+                    <tr ng-repeat="output in outputs">
+                      <td>{{output}}<a ng-click="outputdelete($index)" class="pull-right" style="cursor: pointer;"><span class="glyphicon glyphicon-minus"></span></a></td>
+                    </tr>
+                    <tr ng-show="show1">
+                      <td>
+                        <div class="row">
+                          <div class="col-md-10 margin-bottom-10">
+                            <input ng-blur="outputblur()" type="text" class="form-control col-md-1" ng-model="output1"><span ng-show="outputshow1" style="color:red">输入不能为空</span>
+                          </div>
+                          <div class="col-md-2 margin-bottom-10">
+                            <a ng-click="save2()" style="cursor: pointer;"><span class="glyphicon glyphicon-plus pull-right"></span></a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+         </div>
+         <div class="modal-footer">
+            <a class="btn btn-primary" data-dismiss="modal" ng-click="save()">Save</a>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Quit</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>

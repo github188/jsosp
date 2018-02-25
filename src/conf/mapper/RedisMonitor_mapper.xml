@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.RedisMonitorDAO">
+
+	<select id="queryRedislists" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			id as ID,
+			check_time as CHECK_TIME,
+			redis_host as REDIS_HOST,
+			node1 as NODE1,
+			node2 as NODE2,
+			node3 as NODE3,
+			node4 as NODE4,
+			node5 as NODE5,
+			node6 as NODE6,
+			node7 as NODE7,
+			node8 as NODE8,
+			total as TOTAL
+		FROM
+			redis_resourse_data
+		WHERE
+			check_time > date_add(
+				now(),
+				INTERVAL - 10 MINUTE
+			)
+		ORDER BY
+			check_time DESC
+		LIMIT 1
+	]]>
+	</select>
+	
+	<select id="queryLastRedisBigTable" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			id as ID,
+			CHECK_TIME as CHECK_TIME,
+			redis_host as REDIS_HOST,
+			node as NODE,
+			key_name as KEY_NAME,
+			key_type as KEY_TYPE,
+			key_value as KEY_VALUE
+		FROM
+			redis_bigkey_data
+		WHERE
+			check_time > date_add(
+				now(),
+				INTERVAL - 60 MINUTE
+			)
+	]]>
+	</select>
+
+</mapper>

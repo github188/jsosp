@@ -1,0 +1,34 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="Automation">自动化部署管理</a></li>
+  <li class="active">机器码获取</li>
+</ol>
+<h1>机器码获取</h1>
+<br>
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <form name="myform" role="form" id="templatemo-preferences-form" novalidate>
+      <div class="row">
+        <div class="col-md-4 margin-bottom-15">
+            <label for="customerName" class="control-label">输入ip</label>
+            <input type="text" name="ip" ng-model="ip" class="form-control" ng-pattern="phoneNumberPattern" required>
+        </div>
+        <div class="col-md-4 margin-bottom-15">
+          <br>
+          <div class="col-md-3 col-md-offset-1"><button ng-click="operate()" class="btn btn-primary" ng-disabled="myform.$invalid ||myform.$pristine">获取机器码</button></div>
+          <div class="col-md-5 col-md-offset-1" style="color:red">{{result}}</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 margin-bottom-15">
+          <label for="notes">日志</label>
+          <textarea class="form-control" rows="18" id="notes" ng-model='logs'></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-default">清空</button>    
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

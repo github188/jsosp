@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.DataDeleteDAO">
+
+	<insert id="addDataDelete" parameterType="String">
+		INSERT INTO del_data (ID, SUB_CODE, SUB_NAME, STATUS, ENABLE,START_TIME,END_TIME,CREATE_TIME,LOG,PLATFORM,ISDELETED,REDIS_PREFIX) VALUES
+			(#{id},#{sub_code},#{sub_name},#{status},#{enable},#{start_time},#{end_time},sysdate(),#{log},#{platform},#{isDeleted},#{prefix});
+	</insert>
+
+	<select id="queryDataDeletelists" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID AS ID,
+			SUB_CODE AS SUB_CODE,
+			SUB_NAME AS SUB_NAME,
+			STATUS AS STATUS,
+			ENABLE AS ENABLE,
+			START_TIME AS START_TIME,
+			END_TIME AS END_TIME,
+			CREATE_TIME AS CREATE_TIME,
+			LOG AS LOG,
+			PLATFORM AS PLATFORM
+		FROM
+			del_data 
+		order by CREATE_time desc
+		limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<select id="queryById" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID AS ID,
+			SUB_CODE AS SUB_CODE,
+			SUB_NAME AS SUB_NAME,
+			STATUS AS STATUS,
+			ENABLE AS ENABLE,
+			START_TIME AS START_TIME,
+			END_TIME AS END_TIME,
+			CREATE_TIME AS CREATE_TIME,
+			LOG AS LOG,
+			PLATFORM AS PLATFORM
+		FROM
+			del_data 
+		where id = #{id}
+	]]>
+	</select>
+	
+	<select id="queryDataDeleteCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) AS DATADELETECOUNTS
+		FROM
+			del_data 
+	]]>
+	</select>
+	
+	<select id="queryDataDeleteCounts1" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) AS DATADELETECOUNTS
+		FROM
+			del_data 
+		where status = 2
+	]]>
+	</select>
+	
+	<select id="queryDataDeleteCounts2" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) AS DATADELETECOUNTS
+		FROM
+			del_data 
+		where status = 0 
+	]]>
+	</select>
+	
+	<select id="queryDataDeleteNotStarted" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID AS ID,
+			SUB_CODE AS SUB_CODE,
+			SUB_NAME AS SUB_NAME,
+			STATUS AS STATUS,
+			ENABLE AS ENABLE,
+			START_TIME AS START_TIME,
+			END_TIME AS END_TIME,
+			CREATE_TIME AS CREATE_TIME,
+			LOG AS LOG,
+			PLATFORM AS PLATFORM
+		FROM
+			del_data 
+		where status = 0 
+	]]>
+	</select>
+
+</mapper>

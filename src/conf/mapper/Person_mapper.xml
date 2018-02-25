@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.master.dao.PersonDao">
+	<resultMap id="PersonDO" type="com.jieshun.ops.master.model.PersonDO">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="CODE" property="code" jdbcType="VARCHAR" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="GENDER" property="gender" jdbcType="VARCHAR" />
+		<result column="DEPARTMENT" property="department" jdbcType="VARCHAR" />
+		<result column="POSITION" property="position" jdbcType="VARCHAR" />
+		<result column="PHONE" property="phone" jdbcType="VARCHAR" />
+		<result column="EMAIL" property="email" jdbcType="VARCHAR" />
+		<result column="IS_EMPLOYEE" property="isEmployee" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getReceiptorsByPlatform" resultMap="PersonDO"
+		parameterType="java.lang.String">
+		select
+		mp.ID, mp.CODE, mp.NAME, mp.GENDER,mp.DEPARTMENT, mp.POSITION, mp.PHONE,mp.EMAIL,mp.IS_EMPLOYEE
+		from mas_person mp
+		inner join mas_sms_receiptor msr on mp.id=msr.RECEIPTOR_ID
+		inner join mas_platform mpf on msr.platform_id=mpf.id
+		where mpf.platform_code=#{platformCode}
+		
+	</select>
+	
+	<select id="getReceiptorsByProject" resultMap="PersonDO"
+		parameterType="java.lang.String">
+		select
+		mp.ID, mp.CODE, mp.NAME, mp.GENDER,mp.DEPARTMENT, mp.POSITION, mp.PHONE,mp.EMAIL,mp.IS_EMPLOYEE
+		from mas_person mp
+		inner join mas_sms_receiptor msr on mp.id=msr.RECEIPTOR_ID
+		inner join mas_project mpj on msr.project_id=mpj.id
+		where mpj.code=#{projectCode}
+		
+	</select>
+</mapper>

@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.springframework.org/schema/tx 
+http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+http://www.springframework.org/schema/aop 
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+">
+
+	<bean id="LicenseJob" class="com.jieshun.ops.task.licensemanagement.LicenseTask" />
+	<bean id="LicenseJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="LicenseJob" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="LicenseBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="LicenseJobMethod"></property>
+		<property name="cronExpression" value="${LicenseJob}"></property>
+	</bean>
+	
+	<bean id="RedisMonitorJob" class="com.jieshun.ops.task.redisMonitor.RedisMonitorTask" >
+		<property name="phones" value="${redis.phone}" /> 
+	</bean>
+	<bean id="RedisMonitorJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="RedisMonitorJob" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="RedisMonitorBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="RedisMonitorJobMethod"></property>
+		<property name="cronExpression" value="${RedisMonitorJob}"></property>
+	</bean>
+	
+	<bean id="WankeDataUploadJob" class="com.jieshun.ops.task.wankeUnload.WankeDataUpload" />
+	<bean id="WankeDataUploadJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="WankeDataUploadJob" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="WankeDataUploadBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="WankeDataUploadJobMethod"></property>
+		<property name="cronExpression" value="${WankeDataUploadJob}"></property>
+	</bean>
+	
+	<bean id="RedisBigTableJob" class="com.jieshun.ops.task.redisMonitor.RedisBigTableTask" >
+		<property name="phones" value="${redis.phone}" /> 
+	</bean>
+	<bean id="RedisBigTableJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="RedisBigTableJob" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="RedisBigTableBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="RedisBigTableJobMethod"></property>
+		<property name="cronExpression" value="${RedisBigTableJob}"></property>
+	</bean>
+	
+	<bean id="JdbcConnDevOps2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="devops" />
+		<constructor-arg name="url" value="${jdbc_url}" />
+		<constructor-arg name="username" value="${jdbc_username}" />
+		<constructor-arg name="passwd" value="${jdbc_password}" />
+	</bean>
+
+	<bean id="JdbcConnCloud2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="CLOUD" />
+		<constructor-arg name="url" value="${cloud.jdbc.url}" />
+		<constructor-arg name="username" value="${cloud.jdbc.username}" />
+		<constructor-arg name="passwd" value="${cloud.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_zuyong2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="ZUYONG" />
+		<constructor-arg name="url" value="${zuyong.jdbc.url}" />
+		<constructor-arg name="username" value="${zuyong.jdbc.username}" />
+		<constructor-arg name="passwd" value="${zuyong.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_saoma2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="JSSM" />
+		<constructor-arg name="url" value="${jssm.jdbc.url}" />
+		<constructor-arg name="username" value="${jssm.jdbc.username}" />
+		<constructor-arg name="passwd" value="${jssm.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_quanshengtai2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="QST" />
+		<constructor-arg name="url" value="${qst.jdbc.url}" />
+		<constructor-arg name="username" value="${qst.jdbc.username}" />
+		<constructor-arg name="passwd" value="${qst.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_jszt2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="JSZT" />
+		<constructor-arg name="url" value="${jszt.jdbc.url}" />
+		<constructor-arg name="username" value="${jszt.jdbc.username}" />
+		<constructor-arg name="passwd" value="${jszt.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_wankewuye2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="WANKE" />
+		<constructor-arg name="url" value="${wanke.jdbc.url}" />
+		<constructor-arg name="username" value="${wanke.jdbc.username}" />
+		<constructor-arg name="passwd" value="${wanke.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_jindiwuye2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="JINDI" />
+		<constructor-arg name="url" value="${jindi.jdbc.url}" />
+		<constructor-arg name="username" value="${jindi.jdbc.username}" />
+		<constructor-arg name="passwd" value="${jindi.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_lvcheng2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="LVCHENG" />
+		<constructor-arg name="url" value="${lvcheng.jdbc.url}" />
+		<constructor-arg name="username" value="${lvcheng.jdbc.username}" />
+		<constructor-arg name="passwd" value="${lvcheng.jdbc.password}" />
+	</bean>
+	<!-- 新追加 -->
+	<bean id="JdbcConn_huaqiaocheng2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="HQC" />
+		<constructor-arg name="url" value="${huaqiaocheng.jdbc.url}" />
+		<constructor-arg name="username" value="${huaqiaocheng.jdbc.username}" />
+		<constructor-arg name="passwd" value="${huaqiaocheng.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_biguiyuan2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="BGY" />
+		<constructor-arg name="url" value="${biguiyuan.jdbc.url}" />
+		<constructor-arg name="username" value="${biguiyuan.jdbc.username}" />
+		<constructor-arg name="passwd" value="${biguiyuan.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_whga2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="WHGA" />
+		<constructor-arg name="url" value="${whga.jdbc.url}" />
+		<constructor-arg name="username" value="${whga.jdbc.username}" />
+		<constructor-arg name="passwd" value="${whga.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_lgjb2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="LGJB" />
+		<constructor-arg name="url" value="${lgjb.jdbc.url}" />
+		<constructor-arg name="username" value="${lgjb.jdbc.username}" />
+		<constructor-arg name="passwd" value="${lgjb.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_bnwy2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="BNWY" />
+		<constructor-arg name="url" value="${bnwy.jdbc.url}" />
+		<constructor-arg name="username" value="${bnwy.jdbc.username}" />
+		<constructor-arg name="passwd" value="${bnwy.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_yhwy2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="YHWY" />
+		<constructor-arg name="url" value="${yhwy.jdbc.url}" />
+		<constructor-arg name="username" value="${yhwy.jdbc.username}" />
+		<constructor-arg name="passwd" value="${yhwy.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_tjwy2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="TJWY" />
+		<constructor-arg name="url" value="${tjwy.jdbc.url}" />
+		<constructor-arg name="username" value="${tjwy.jdbc.username}" />
+		<constructor-arg name="passwd" value="${tjwy.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_myjx2" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="MYJX" />
+		<constructor-arg name="url" value="${myjx.jdbc.url}" />
+		<constructor-arg name="username" value="${myjx.jdbc.username}" />
+		<constructor-arg name="passwd" value="${myjx.jdbc.password}" />
+	</bean>
+	<bean id="DataDeleteTask2Job" class="com.jieshun.ops.task.datadelete.DataDeleteTask2" >
+		<property name="redis_server" value="${redis_server}" /> 
+		<property name="redis_password" value="${redis_password}" /> 
+		<property name="jdbcConns">
+			<set>
+				<ref bean="JdbcConnDevOps2" />
+				<ref bean="JdbcConnCloud2" />
+				<ref bean="JdbcConn_zuyong2" />
+				<ref bean="JdbcConn_saoma2" />
+				<ref bean="JdbcConn_quanshengtai2" />
+				<ref bean="JdbcConn_jszt2" />
+				<ref bean="JdbcConn_wankewuye2" />
+				<ref bean="JdbcConn_jindiwuye2" />
+				<ref bean="JdbcConn_lvcheng2" />
+				<ref bean="JdbcConn_huaqiaocheng2" />
+				<ref bean="JdbcConn_biguiyuan2" />
+				<ref bean="JdbcConn_whga2" />
+				<ref bean="JdbcConn_lgjb2" />
+				<ref bean="JdbcConn_bnwy2" />
+				<ref bean="JdbcConn_yhwy2" />
+				<ref bean="JdbcConn_tjwy2" />
+				<ref bean="JdbcConn_myjx2" />
+			</set>
+		</property>
+	</bean>
+	<bean id="DataDeleteTask2JobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="DataDeleteTask2Job" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="DataDeleteTask2Bean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="DataDeleteTask2JobMethod"></property>
+		<property name="cronExpression" value="${DataDeleteJob}"></property>
+	</bean>
+	
+	<bean id="LockWaitJob" class="com.jieshun.ops.task.lockwait.LockWaitTask2" >
+		<property name="phones" value="${lockwait.phone}" /> 
+	</bean>
+	<bean id="LockWaitJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="LockWaitJob" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="LockWaitBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="LockWaitJobMethod"></property>
+		<property name="cronExpression" value="${LockWaitJob}"></property>
+	</bean>
+	
+	<bean id="LogMonitorJob" class="com.jieshun.ops.task.logmonitor.LogMonitorTask" >
+		<property name="endpoint" value="${aliyun.endpoint}" /> 
+		<property name="accessKeyId" value="${aliyun.accessKeyId}" /> 
+		<property name="accessKeySecret" value="${aliyun.accessKeySecret}" /> 
+		<property name="project" value="${aliyun.project}" /> 
+		<property name="logStore" value="${aliyun.logStore}" /> 
+		<property name="phones" value="${aliyun.phones}" /> 
+	</bean>
+	<bean id="LogMonitorJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="LogMonitorJob" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="LogMonitorBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="LogMonitorJobMethod"></property>
+		<property name="cronExpression" value="${LogMonitorJob}"></property>
+	</bean>
+	
+	<bean id="LogMonitorJob2" class="com.jieshun.ops.task.logmonitor.LogMonitorTask2" >
+		<property name="endpoint" value="${aliyun.endpoint}" /> 
+		<property name="accessKeyId" value="${aliyun.accessKeyId}" /> 
+		<property name="accessKeySecret" value="${aliyun.accessKeySecret}" /> 
+		<property name="project" value="${aliyun.project}" /> 
+		<property name="logStore" value="${aliyun.logStore}" /> 
+		<property name="phones" value="${aliyun.phones}" /> 
+		<property name="deadservice" value="${aliyun.deadservice}" /> 
+		<property name="deadservicePhone" value="${aliyun.deadservice.phone}" /> 
+		<property name="bnwyPhone" value="${bnwy.phone}" /> 
+		<property name="bnwyIp" value="${bnwy.ip}" /> 
+		<property name="whiteIp" value="${white.ip}" /> 
+	</bean>
+	<bean id="LogMonitorJobMethod2"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="LogMonitorJob2" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="LogMonitorBean2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="LogMonitorJobMethod2"></property>
+		<property name="cronExpression" value="${LogMonitor2Job}"></property>
+	</bean>
+
+	<!-- 云平台好友告警任务 -->
+	<bean id="RosterMonitor" class="com.jieshun.ops.task.cloudof.RosterMonitor" />
+	<bean id="RosterMonitorJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="RosterMonitor" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="RosterMonitorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="RosterMonitorJobMethod"></property>
+		<property name="cronExpression" value="${RosterMonitorJob}"></property>
+	</bean>
+	
+	<!-- 万科数据上传任务 -->
+	<bean id="WanKeDataUploadMonitor" class="com.jieshun.ops.task.wanke.DataUploadMonitor" />
+	<bean id="WanKeDataUploadMonitorJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="WanKeDataUploadMonitor" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="WanKeDataUploadMonitorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="WanKeDataUploadMonitorJobMethod"></property>
+		<property name="cronExpression" value="${WanKeDataUpJob}"></property>
+	</bean>
+	
+	<!-- 离线率统计任务 -->
+	<bean id="ProjectOfflineDayState" class="com.jieshun.ops.task.offline.ProjectOfflineDayState" />
+	<bean id="ProjectOfflineDayStateJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="ProjectOfflineDayState" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="ProjectOfflineDayStateTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="ProjectOfflineDayStateJobMethod"></property>
+		<property name="cronExpression" value="${ProjectOffLineJob}"></property>
+	</bean>
+	
+	<!-- 离线数据采集任务 -->
+	<bean id="ProjectOnlineMonitor" class="com.jieshun.ops.task.offline.ProjectOnlineMonitor" />
+	<bean id="ProjectOnlineMonitorJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="ProjectOnlineMonitor" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="ProjectOnlineMonitorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="ProjectOnlineMonitorJobMethod"></property>
+		<property name="cronExpression" value="${ProjectOnlineMonitorJob}"></property>
+	</bean>
+	
+	<!-- 离线率统计任务 -->
+	<bean id="CloudServiceMonitor" class="com.jieshun.ops.task.bizservice.CloudServiceMonitor" />
+	<bean id="CloudServiceMonitorJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="CloudServiceMonitor" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="CloudServiceMonitorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="CloudServiceMonitorJobMethod"></property>
+		<property name="cronExpression" value="${CloudServiceMonitorJob}"></property>
+	</bean>
+	
+	<!-- 子系统在线监控任务 -->
+	<bean id="SubsystemOnlineMonitor" class="com.jieshun.ops.task.subsystemonline.SubsystemOnlineTask" />
+	<bean id="SubsystemOnlineMonitorJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="SubsystemOnlineMonitor" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="SubsystemOnlineMonitorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="SubsystemOnlineMonitorJobMethod"></property>
+		<property name="cronExpression" value="${SubsystemOnlineMonitorJob}"></property>
+	</bean>
+	
+	<!-- 数据中心监控任务 -->
+	<bean id="DcMonitor" class="com.jieshun.ops.task.dcMonitor.DcMonitorTask" />
+	<bean id="DcMonitorJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="DcMonitor" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>execute</value>
+		</property>
+	</bean>
+	<bean id="DcMonitorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="DcMonitorJobMethod"></property>
+		<property name="cronExpression" value="${DcMonitorJob}"></property>
+	</bean>
+
+	<!-- ======================== 调度工厂 ======================== -->
+	<bean id="SpringJobSchedulerFactoryBean"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="LicenseBean" />
+				<ref bean="RedisMonitorBean" />
+				<ref bean="RedisBigTableBean" />
+				<ref bean="WankeDataUploadBean" />
+				<ref bean="LockWaitBean" />
+				<ref bean="LogMonitorBean" />
+				<ref bean="LogMonitorBean2" />
+				<ref bean="RosterMonitorTrigger" />
+				<ref bean="WanKeDataUploadMonitorTrigger" />
+				<ref bean="ProjectOfflineDayStateTrigger" />
+				<ref bean="CloudServiceMonitorTrigger"/>
+				<ref bean="ProjectOnlineMonitorTrigger"/>
+				<ref bean="DataDeleteTask2Bean"/>
+				<ref bean="SubsystemOnlineMonitorTrigger"/>
+				<ref bean="DcMonitorTrigger"/>
+			</list>
+		</property>
+	</bean>
+</beans>

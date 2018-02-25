@@ -1,0 +1,1218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.springframework.org/schema/tx 
+http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+http://www.springframework.org/schema/aop 
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+">
+
+	<!-- 默认数据源 -->
+	<bean name="defaultDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="${jdbc_url}" />
+		<property name="username" value="${jdbc_username}" />
+		<property name="password" value="${jdbc_password}" />
+
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+
+		<!-- 监控数据库 -->
+		<!-- <property name="filters" value="stat" /> -->
+<!-- 		<property name="filters" value="mergeStat" /> -->
+	</bean>
+
+	<bean id="ds_cloud" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${cloud.jdbc.url}" />
+		<property name="username" value="${cloud.jdbc.username}" />
+		<property name="password" value="${cloud.jdbc.password}" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="1" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="3" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="3" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 云平台Openfire数据库数据源 -->
+	<bean id="ds_cloud-of" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${cloud-of.jdbc.url}" />
+		<property name="username" value="${cloud-of.jdbc.username}" />
+		<property name="password" value="${cloud-of.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="1" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="3" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="3" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 租用平台数据源 -->
+	<bean id="ds_zuyong" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${zuyong.jdbc.url}" />
+		<property name="username" value="${zuyong.jdbc.username}" />
+		<property name="password" value="${zuyong.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 扫码平台数据源 -->
+	<bean id="ds_smzf" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${jssm.jdbc.url}" />
+		<property name="username" value="${jssm.jdbc.username}" />
+		<property name="password" value="${jssm.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 全生态平台数据源 -->
+	<bean id="ds_qst" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${qst.jdbc.url}" />
+		<property name="username" value="${qst.jdbc.username}" />
+		<property name="password" value="${qst.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 捷顺展厅平台数据源 -->
+	<bean id="ds_jszt" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${jszt.jdbc.url}" />
+		<property name="username" value="${jszt.jdbc.username}" />
+		<property name="password" value="${jszt.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 万科物业平台数据源 -->
+	<bean id="ds_wanke" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${wanke.jdbc.url}" />
+		<property name="username" value="${wanke.jdbc.username}" />
+		<property name="password" value="${wanke.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 碧桂园平台数据源 -->
+	<bean id="ds_biguiyuan" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${biguiyuan.jdbc.url}" />
+		<property name="username" value="${biguiyuan.jdbc.username}" />
+		<property name="password" value="${biguiyuan.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 碧桂园平台数据源 -->
+	<bean id="ds_biguiyuan2" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${biguiyuan2.jdbc.url}" />
+		<property name="username" value="${biguiyuan2.jdbc.username}" />
+		<property name="password" value="${biguiyuan2.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<!-- 死锁监控数据源 -->
+	<bean id="ds_whga" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${whga.jdbc.url}" />
+		<property name="username" value="${whga.jdbc.username}" />
+		<property name="password" value="${whga.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<bean id="ds_huaqiaocheng" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${huaqiaocheng.jdbc.url}" />
+		<property name="username" value="${huaqiaocheng.jdbc.username}" />
+		<property name="password" value="${huaqiaocheng.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<bean id="ds_logan" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${logan.jdbc.url}" />
+		<property name="username" value="${logan.jdbc.username}" />
+		<property name="password" value="${logan.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<bean id="ds_bnwy" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${bnwy.jdbc.url}" />
+		<property name="username" value="${bnwy.jdbc.username}" />
+		<property name="password" value="${bnwy.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<bean id="ds_dc" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${dc.jdbc.url}" />
+		<property name="username" value="${dc.jdbc.username}" />
+		<property name="password" value="${dc.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<bean id="ds_jhtdc" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${jhtdc.jdbc.url}" />
+		<property name="username" value="${jhtdc.jdbc.username}" />
+		<property name="password" value="${jhtdc.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="ds_smzf_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${smzf_r.jdbc.url}" />
+		<property name="username" value="${smzf_r.jdbc.username}" />
+		<property name="password" value="${smzf_r.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="ds_zuyong_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${zuyong_r.jdbc.url}" />
+		<property name="username" value="${zuyong_r.jdbc.username}" />
+		<property name="password" value="${zuyong_r.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="ds_qst_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${qst_r.jdbc.url}" />
+		<property name="username" value="${qst_r.jdbc.username}" />
+		<property name="password" value="${qst_r.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="ds_wanke_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${wanke_r.jdbc.url}" />
+		<property name="username" value="${wanke_r.jdbc.username}" />
+		<property name="password" value="${wanke_r.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="ds_biguiyuan2_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${biguiyuan2_r.jdbc.url}" />
+		<property name="username" value="${biguiyuan2_r.jdbc.username}" />
+		<property name="password" value="${biguiyuan2_r.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="ds_hqc_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${hqc_r.jdbc.url}" />
+		<property name="username" value="${hqc_r.jdbc.username}" />
+		<property name="password" value="${hqc_r.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="ds_tjwy_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${tjwy_r.jdbc.url}" />
+		<property name="username" value="${tjwy_r.jdbc.username}" />
+		<property name="password" value="${tjwy_r.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="ds_smsy_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${smsy_r.jdbc.url}" />
+		<property name="username" value="${smsy_r.jdbc.username}" />
+		<property name="password" value="${smsy_r.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="ds_zswy_r" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver.mysql}" />  
+		<property name="url" value="${zswy_r.jdbc.url}" />
+		<property name="username" value="${zswy_r.jdbc.username}" />
+		<property name="password" value="${zswy_r.jdbc.password}" />
+				<!-- 初始化连接大小 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池最大使用连接数量 -->
+		<property name="maxActive" value="100" />
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="20" />
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="0" />
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- <property name="poolPreparedStatements" value="true" /> <property 
+			name="maxPoolPreparedStatementPerConnectionSize" value="33" /> -->
+
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="true" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="25200000" />
+
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="1800" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+
+	<bean id="dataSource" class="com.jieshun.ops.comm.mybatis.dbconn.DynamicDataSource">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry value-ref="defaultDataSource" key="defaultDataSource"></entry>
+				<entry value-ref="ds_cloud" key="ds_cloud"></entry>
+				<entry value-ref="ds_smzf" key="ds_smzf"></entry>
+				<entry value-ref="ds_zuyong" key="ds_zuyong"></entry>
+				<entry value-ref="ds_biguiyuan2" key="ds_biguiyuan2"></entry>
+				<entry value-ref="ds_whga" key="ds_whga"></entry>
+				<entry value-ref="ds_wanke" key="ds_wanke"></entry>
+				<entry value-ref="ds_qst" key="ds_qst"></entry>
+				<entry value-ref="ds_jszt" key="ds_jszt"></entry>
+				<entry value-ref="ds_cloud-of" key="ds_cloud-of"></entry>
+				<entry value-ref="ds_huaqiaocheng" key="ds_huaqiaocheng"></entry>
+				<entry value-ref="ds_logan" key="ds_logan"></entry>
+				<entry value-ref="ds_bnwy" key="ds_bnwy"></entry>
+				<entry value-ref="ds_dc" key="ds_dc"></entry>
+				<entry value-ref="ds_jhtdc" key="ds_jhtdc"></entry>
+				<entry value-ref="ds_smzf_r" key="ds_smzf_r"></entry>
+				<entry value-ref="ds_zuyong_r" key="ds_zuyong_r"></entry>
+				<entry value-ref="ds_qst_r" key="ds_qst_r"></entry>
+				<entry value-ref="ds_wanke_r" key="ds_wanke_r"></entry>
+				<entry value-ref="ds_biguiyuan2_r" key="ds_biguiyuan2_r"></entry>
+				<entry value-ref="ds_hqc_r" key="ds_hqc_r"></entry>
+				<entry value-ref="ds_tjwy_r" key="ds_tjwy_r"></entry>
+				<entry value-ref="ds_smsy_r" key="ds_smsy_r"></entry>
+				<entry value-ref="ds_zswy_r" key="ds_zswy_r"></entry>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="defaultDataSource"></property>      <!-- 默认使用ds1的数据源 -->
+	</bean>
+
+	<!-- myBatis文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+		<property name="dataSource" ref="dataSource" />
+		<!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
+		<property name="mapperLocations" value="classpath:conf/mapper/*.xml" />
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.jieshun.ops.autode.dao,com.jieshun.ops.security.user.dao,com.jieshun.ops.security.role.dao,com.jieshun.ops.system.packages.dao,com.jieshun.ops.elk.dao,com.jieshun.ops.report.dao,com.jieshun.ops.project.dao,com.jieshun.ops.master.dao,com.jieshun.ops.task.wanke,com.jieshun.ops.comm.openfire.dao,com.jieshun.ops.dao,com.jieshun.ops.redis.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="WhgaParkInoutCheck" class="com.jieshun.ops.task.whga.WhgaParkInoutCheck">
+		<constructor-arg name="time" value="${whga.time}" />
+		<constructor-arg name="driver" value="${whga.jdbc.driver}" />
+		<constructor-arg name="url" value="${whga.jdbc.url}" />
+		<constructor-arg name="user" value="${whga.jdbc.username}" />
+		<constructor-arg name="password" value="${whga.jdbc.password}" />
+		<constructor-arg name="parkcodes" value="${whga.parkcodes}" />
+		<constructor-arg name="phones" value="${whga.phones}" />
+	</bean>
+
+	<bean id="TransFileCheck" class="com.jieshun.ops.task.transfile.TransFileCheck">
+		<constructor-arg name="time" value="${transfile.time}" />
+		<constructor-arg name="driver" value="${transfile.jdbc.driver}" />
+		<constructor-arg name="url" value="${transfile.jdbc.url}" />
+		<constructor-arg name="user" value="${transfile.jdbc.username}" />
+		<constructor-arg name="password" value="${transfile.jdbc.password}" />
+		<constructor-arg name="sql" value="${transfile.sql}" />
+		<constructor-arg name="phones" value="${transfile.phones}" />
+	</bean>
+
+<!-- 	<bean id="LockWaitCheck" class="com.jieshun.ops.task.lockwait.LockWaitCheck">
+		<constructor-arg name="driver" value="${lockwait.jdbc.driver}" />
+		<constructor-arg name="url" value="${lockwait.jdbc.url}" />
+		<constructor-arg name="user" value="${lockwait.jdbc.username}" />
+		<constructor-arg name="password" value="${lockwait.jdbc.password}" />
+		<constructor-arg name="phones" value="${lockwait.phones}" />
+	</bean>
+ -->
+	<bean id="ZbtParkInoutCheck" class="com.jieshun.ops.task.zbt.ZbtParkInoutCheck">
+		<constructor-arg name="time" value="${zbt.time}" />
+		<constructor-arg name="driver" value="${zbt.jdbc.driver}" />
+		<constructor-arg name="url" value="${zbt.jdbc.url}" />
+		<constructor-arg name="user" value="${zbt.jdbc.username}" />
+		<constructor-arg name="password" value="${zbt.jdbc.password}" />
+		<constructor-arg name="parkcodes" value="${zbt.parkcodes}" />
+		<constructor-arg name="phones" value="${zbt.phones}" />
+	</bean>
+
+	<!-- <bean id="YTKCheck" class="com.jieshun.ops.task.ytk.YTKCheck">
+		<constructor-arg name="time" value="${ytk.time}" />
+		<constructor-arg name="driver" value="${ytk.jdbc.driver}" />
+		<constructor-arg name="url" value="${ytk.jdbc.url}" />
+		<constructor-arg name="user" value="${ytk.jdbc.username}" />
+		<constructor-arg name="password" value="${ytk.jdbc.password}" />
+		<constructor-arg name="sql" value="${ytk.sql}" />
+		<constructor-arg name="phones" value="${ytk.phones}" />
+	</bean> -->
+
+	<bean id="JdbcConnDevOps" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="devops" />
+		<constructor-arg name="url" value="${jdbc_url}" />
+		<constructor-arg name="username" value="${jdbc_username}" />
+		<constructor-arg name="passwd" value="${jdbc_password}" />
+	</bean>
+
+	<bean id="JdbcConnCloud" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="CLOUD" />
+		<constructor-arg name="url" value="${cloud.jdbc.url}" />
+		<constructor-arg name="username" value="${cloud.jdbc.username}" />
+		<constructor-arg name="passwd" value="${cloud.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_zuyong" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="ZUYONG" />
+		<constructor-arg name="url" value="${zuyong.jdbc.url}" />
+		<constructor-arg name="username" value="${zuyong.jdbc.username}" />
+		<constructor-arg name="passwd" value="${zuyong.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_saoma" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="JSSM" />
+		<constructor-arg name="url" value="${jssm.jdbc.url}" />
+		<constructor-arg name="username" value="${jssm.jdbc.username}" />
+		<constructor-arg name="passwd" value="${jssm.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_quanshengtai" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="QST" />
+		<constructor-arg name="url" value="${qst.jdbc.url}" />
+		<constructor-arg name="username" value="${qst.jdbc.username}" />
+		<constructor-arg name="passwd" value="${qst.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_jszt" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="JSZT" />
+		<constructor-arg name="url" value="${jszt.jdbc.url}" />
+		<constructor-arg name="username" value="${jszt.jdbc.username}" />
+		<constructor-arg name="passwd" value="${jszt.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_wankewuye" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="WANKE" />
+		<constructor-arg name="url" value="${wanke.jdbc.url}" />
+		<constructor-arg name="username" value="${wanke.jdbc.username}" />
+		<constructor-arg name="passwd" value="${wanke.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_jindiwuye" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="JINDI" />
+		<constructor-arg name="url" value="${jindi.jdbc.url}" />
+		<constructor-arg name="username" value="${jindi.jdbc.username}" />
+		<constructor-arg name="passwd" value="${jindi.jdbc.password}" />
+	</bean>
+
+	<bean id="JdbcConn_lvcheng" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="LVCHENG" />
+		<constructor-arg name="url" value="${lvcheng.jdbc.url}" />
+		<constructor-arg name="username" value="${lvcheng.jdbc.username}" />
+		<constructor-arg name="passwd" value="${lvcheng.jdbc.password}" />
+	</bean>
+	<!-- 新追加 -->
+	<bean id="JdbcConn_huaqiaocheng" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="HQC" />
+		<constructor-arg name="url" value="${huaqiaocheng.jdbc.url}" />
+		<constructor-arg name="username" value="${huaqiaocheng.jdbc.username}" />
+		<constructor-arg name="passwd" value="${huaqiaocheng.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_biguiyuan" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="BGY" />
+		<constructor-arg name="url" value="${biguiyuan.jdbc.url}" />
+		<constructor-arg name="username" value="${biguiyuan.jdbc.username}" />
+		<constructor-arg name="passwd" value="${biguiyuan.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_whga" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="WHGA" />
+		<constructor-arg name="url" value="${whga.jdbc.url}" />
+		<constructor-arg name="username" value="${whga.jdbc.username}" />
+		<constructor-arg name="passwd" value="${whga.jdbc.password}" />
+	</bean>
+	<bean id="JdbcConn_lgjb" class="com.jieshun.ops.util.JdbcConn">
+		<constructor-arg name="platform" value="LGJB" />
+		<constructor-arg name="url" value="${lgjb.jdbc.url}" />
+		<constructor-arg name="username" value="${lgjb.jdbc.username}" />
+		<constructor-arg name="passwd" value="${lgjb.jdbc.password}" />
+	</bean>
+	
+	<bean id="OSSUtil" class="com.jieshun.ops.util.OSSUtil">
+		<property name="endpoint" value="${oss.endpoint}" />  
+		<property name="accessKeyId" value="${oss.accessKeyId}" />  
+		<property name="accessKeySecret" value="${oss.accessKeySecret}" />  
+		<property name="bucketName" value="${oss.bucketName}" />  
+	</bean>
+	<!-- <bean id="DataDeleteCheck" class="com.jieshun.ops.task.datadelete.DataDeleteCheck">
+		<property name="jdbcConns">
+			<set>
+				<ref bean="JdbcConnDevOps" />
+				<ref bean="JdbcConnCloud" />
+				<ref bean="JdbcConn_zuyong" />
+				<ref bean="JdbcConn_saoma" />
+				<ref bean="JdbcConn_quanshengtai" />
+				<ref bean="JdbcConn_jszt" />
+				<ref bean="JdbcConn_wankewuye" />
+				<ref bean="JdbcConn_jindiwuye" />
+				<ref bean="JdbcConn_lvcheng" />
+				<ref bean="JdbcConn_huaqiaocheng" />
+				<ref bean="JdbcConn_biguiyuan" />
+				<ref bean="JdbcConn_whga" />
+				<ref bean="JdbcConn_lgjb" />
+			</set>
+		</property>
+	</bean> -->
+
+	<!-- 注解方式配置事物 -->
+	<!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
+
+	<!-- 拦截器方式配置事物 -->
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="append*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="modify*" propagation="REQUIRED" />
+			<tx:method name="edit*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="repair" propagation="REQUIRED" />
+			<tx:method name="delAndRepair" propagation="REQUIRED" />
+
+			<tx:method name="get*" propagation="SUPPORTS" />
+			<tx:method name="find*" propagation="SUPPORTS" />
+			<tx:method name="load*" propagation="SUPPORTS" />
+			<tx:method name="search*" propagation="SUPPORTS" />
+			<tx:method name="datagrid*" propagation="SUPPORTS" />
+
+<!-- 			<tx:method name="*" propagation="SUPPORTS" /> -->
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="transactionPointcut"
+			expression="execution(* com.jieshun.ops.autode.service..*Impl.*(..)) OR execution(* com.jieshun.ops.security.user.service..*Impl.*(..)) OR execution(* com.jieshun.ops.system.packages.service..*Impl.*(..)) OR execution(* com.jieshun.ops.security.role.service..*Impl.*(..))  OR execution(* com.jieshun.ops.elk..service..*Impl.*(..)) OR execution(* com.jieshun.ops.redis..service..*Impl.*(..))" />
+		<aop:advisor pointcut-ref="transactionPointcut"
+			advice-ref="transactionAdvice" />
+	</aop:config>
+
+	<!-- 配置druid监控spring jdbc -->
+	<!-- <bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor"> 
+		</bean> <bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" 
+		scope="prototype"> <property name="patterns"> <list> <value>com.jd.pims.pem.service.impl.*.*</value> 
+		</list> </property> </bean> <aop:config> <aop:advisor advice-ref="druid-stat-interceptor" 
+		pointcut-ref="druid-stat-pointcut" /> </aop:config> -->
+</beans>

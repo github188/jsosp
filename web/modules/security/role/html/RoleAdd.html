@@ -1,0 +1,58 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">角色管理</a></li>
+		  <li><a ui-sref="RolesList">角色列表</a></li>
+		  <li class="active">角色新增</li>
+		</ol>
+	</div>
+</div>
+<h1>角色新增</h1>
+<p>
+<div class="row">
+    <div class="col-md-12">
+      <form name="myform" role="form" id="templatemo-preferences-form">
+        <div class="row">
+          <div class="col-md-6 margin-bottom-15">
+            <label for="customerCode" class="control-label">角色名称</label>
+            <input type="text" class="form-control" id="customerCode" value="" required ng-model="roleName">
+          </div>
+          <div class="col-md-6 margin-bottom-15">
+              <label for="functions" class="control-label">权限列表</label>
+              <p>
+              <label class="checkbox-inline" ng-click="click1()" >
+                <input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="perm1">{{perm11.name}} 
+              </label>
+              <label class="checkbox-inline" ng-click="click2()" >
+                <input type="checkbox" id="inlineCheckbox2" value="option2" ng-model="perm2"> {{perm22.name}}
+              </label>
+          </div>
+        </div>
+        <!-- <div class="row">
+		    <div class="">
+	          <div class="col-md-6 margin-bottom-15">
+	            <label for="projectCode" class="control-label">所属角色列表</label>
+	            <select multiple class="selectpicker show-tick form-control margin-bottom-15" data-live-search="true" data-size="5" ng-model="user" >
+	              <option ng-repeat="x in userslist" value="{{$index}}">{{x.userName}}</option>
+	            </select>
+	          </div>
+		    </div>
+		 </div> -->
+        <div class="row">
+          <div class="col-md-12 margin-bottom-15">
+            <label for="notes">备注</label>
+            <textarea class="form-control" rows="3" id="notes" ng-model="remark"></textarea>
+          </div>
+        </div>
+      
+        <div class="row templatemo-form-buttons">
+          <div class="col-md-12">
+            <button ng-click="save()" class="btn btn-primary"  ng-disabled="myform.$invalid ||myform.$pristine">保存</button>
+            <button type="reset" class="btn btn-default">重置</button>    
+            <button ui-sref="RolesList" class="btn btn-default">取消</button>    
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</p>

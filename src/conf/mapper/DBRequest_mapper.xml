@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.DBRequestDAO">
+
+	<insert id="add" parameterType="String">
+		INSERT INTO rds_db_request_info (ID, RequestPerson, InstanceName, DbName, Purpose,RequestDate,EndDate,IsCreated) VALUES
+			(#{id},#{requestPerson},#{instanceName},#{dbName},#{purpose},#{requestDate},#{endDate},#{isCreated});
+	</insert>
+
+	<select id="queryDbrequestlists" resultType="java.util.HashMap">
+	<![CDATA[
+		select 
+			id as ID,
+			RequestPerson as REQUESTPERSON,
+			InstanceName as INSTANCENAME,
+			DbName as DBNAME,
+			Purpose as PURPOSE,
+			RequestDate as REQUESTDATE,
+			EndDate as ENDDATE,
+			IsCreated as ISCREATED
+		from rds_db_request_info
+		order by IsCreated
+		limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<update id="updateById" parameterType="String">  
+        UPDATE rds_db_request_info  
+            SET IsCreated = #{IsCreated}
+         WHERE id = #{id}  
+	</update>  
+	
+	<select id="queryDbrequestCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		select 
+			IsCreated as ISCREATED,
+			count(1) as COUNT 
+		from rds_db_request_info
+		group by IsCreated;
+	]]>
+	</select>
+	
+</mapper>

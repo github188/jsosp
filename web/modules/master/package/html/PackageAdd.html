@@ -1,0 +1,97 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">外发包管理</a></li>
+		  <li><a ui-sref="PackagesList">外发包列表</a></li>
+		  <li class="active">外发包新增</li>
+		</ol>
+	</div>
+</div>
+<h1>外发包新增</h1>
+<p>
+<div class="row">
+    <div class="col-md-12">
+      <form name="myform" role="form" id="templatemo-preferences-form">
+        <div class="row">
+ <!--          <div class="col-md-6 margin-bottom-15">
+            <label for="customerCode" class="control-label">所属组件编号</label>
+            <input type="text" class="form-control" id="customerCode" value="" required ng-model="componentId">
+          </div> -->
+          <div class="col-md-6 margin-bottom-15">
+             <label class="control-label">请选择服务类型</label>
+              <select class="form-control" ng-model="componentId" ng-options="service.label for service in services" required>
+              <option value="">-- 请选择服务类型 --</option>
+           </select>
+          </div>
+          <div class="col-md-6 margin-bottom-15">
+            <label for="functions" class="control-label">版本日期</label>
+            <p class="input-group">
+              <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="versionDate" is-open="opened" close-text="Close" required/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+          </div>
+        </div>
+	       <div class="row">
+          <div class="col-md-6 margin-bottom-15">
+            <label for="customerCode" class="control-label">外发人</label>
+            <input type="text" class="form-control" id="customerCode" value="" required ng-model="principal">
+          </div>
+          <div class="col-md-4 margin-bottom-15">
+            <label for="customerCode" class="control-label">数据库脚本(.sql),参数文件(.txt),组件文件(.zip)</label>
+            <p>
+            <input id="lefile1" type="file" ng-show="false" ngf-select ng-model="lefile1" required ngf-multiple="true" ng-change="changelefile1()">
+
+             <!-- <span onclick="$('input[id=lefile]').click();"><a class="btn btn-primary">导入</a></span>-->
+            <span onclick="lefile1.click();"><a class="btn btn-primary">导入</a></span>{{lefile1name}}
+<!--             <span ng-click="uploadlefile1(lefile1)"><a class="btn btn-primary">上传</a></span> -->
+            
+          </div>
+        </div>
+         <div class="row">
+          <div class="col-md-12 margin-bottom-15">
+              <label for="functions" class="control-label">外发说明</label>
+              <textarea type="text" class="form-control" rows="3" id="customerCode" required ng-model="releaseNote"></textarea>
+          </div>
+<!--           <div class="col-md-4 margin-bottom-15"> -->
+<!--             <label for="functions" class="control-label">参数文件</label> -->
+<!--             <p> -->
+<!--             <input id="lefile2" type="file" ng-show="false" ngf-select ng-model="lefile2" accept="text/plain" ngf-multiple="true" ng-change="changelefile2()"> -->
+
+             <!-- <span onclick="$('input[id=lefile]').click();"><a class="btn btn-primary">导入</a></span>-->
+<!--             <span onclick="lefile2.click();"><a class="btn btn-primary">导入</a></span>{{lefile2name}} -->
+<!--             <span ng-click="uploadlefile2(lefile2)"><a class="btn btn-primary">上传</a></span> -->
+
+<!--           </div> -->
+<!--           <div class="col-md-4 margin-bottom-15"> -->
+<!--             <label for="customerCode" class="control-label">组件文件</label> -->
+<!--             <p> -->
+<!--             <input id="lefile3" type="file" ng-show="false" ngf-select ng-model="lefile3" accept="application/x-zip-compressed" required ng-change="changelefile3()"> -->
+
+             <!-- <span onclick="$('input[id=lefile]').click();"><a class="btn btn-primary">导入</a></span>-->
+<!--             <span onclick="lefile3.click();"><a class="btn btn-primary">导入</a></span>{{lefile3name}} -->
+<!--             <span ng-click="uploadlefile3(lefile3)"><a class="btn btn-primary">上传</a></span> -->
+
+<!--           </div> -->
+
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 margin-bottom-15">
+            <label for="notes">备注</label>
+            <textarea class="form-control" rows="3" id="notes" ng-model="remark" placeholder="填写是否为标准版或其他"></textarea>
+          </div>
+        </div>
+      
+        <div class="row templatemo-form-buttons">
+          <div class="col-md-12">
+            <button ng-click="save()" class="btn btn-primary"  ng-disabled="myform.$invalid ||myform.$pristine">保存</button>
+            <button type="reset" class="btn btn-default">重置</button>    
+            <button ui-sref="RolesList" class="btn btn-default">取消</button>    
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</p>

@@ -1,0 +1,119 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="#">报表管理</a></li>
+  <li class="active">在线率管理</li>
+</ol>
+<h1>在线率管理</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="OnlineReport">在线率 <span class="badge">{{onlineRate}}</span></a></li>
+    </ul>          
+  </div>
+</div> 
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+      <div class="row">
+       <!-- <div class="col-md-2 margin-bottom-15">
+         <label for="customerCode" class="control-label">所属服务组件</label>
+         <input type="text" class="form-control" id="customerCode" value="" required ng-model="componentId">
+       </div> -->
+       <div class="col-md-2 margin-bottom-15">
+         <label for="customerCode" class="control-label">平台选择</label>
+           <select class="form-control" ng-model="platformid" ng-options="platform.name for platform in platforms" required></select>
+       </div>
+       <div class="col-md-2 margin-bottom-15">
+         <label for="customerCode" class="control-label">项目名</label>
+         <input type="text" class="form-control" id="customerCode" value="" required ng-model="projectname">
+       </div>
+       <div class="col-md-2 margin-bottom-15">
+         <label for="customerCode" class="control-label">项目编号</label>
+         <input type="text" class="form-control" id="customerCode" value="" required ng-model="projectcode">
+       </div>
+       
+       <div class="col-md-2 margin-bottom-15">
+          <label for="customerName" class="control-label">开始日期</label>
+          <p class="input-group">
+            <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="dt1" is-open="opened1" close-text="Close" required/>
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="openCalendar1($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </p>
+       </div>
+       <div class="col-md-2 margin-bottom-15">
+          <label for="customerName" class="control-label">结束日期</label>
+          <p class="input-group">
+            <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="dt2" is-open="opened2" close-text="Close" required/>
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="openCalendar2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </p>
+       </div>
+       
+       <div class="col-md-2 margin-bottom-15">
+         <br>
+         <button type="button" ng-click="query()" class="btn btn-primary">查询</button>
+       </div>
+     </div>
+    <!-- <div class="btn-group pull-right" id="templatemo_sort_btn">
+      <button type="button" class="btn btn-default">Sort by</button>
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="#">接口名称</a></li>
+        <li><a href="#">服务ID</a></li>
+        <li><a href="#">所属版本</a></li>
+      </ul>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-repeat="menu in menus"><a class="btn" ng-click="sortBy(menu)">{{menu}}</a></li>
+      </ul>
+    </div> -->
+    <div class="">
+      <h4 class="margin-bottom-15">项目在线日志<small class="text-danger">(离线次数:{{offlinetimes}},离线时长:{{offlinetime}}秒)</small></h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th style="text-align:center;">#</th>
+            <th style="text-align:center;">平台名称</th>
+            <th style="text-align:center;">项目名</th>
+            <th style="text-align:center;">项目编号</th>
+            <th style="text-align:center;">日期</th>
+            <th style="text-align:center;">当日离线(次)</th>
+            <th style="text-align:center;">当日离线(秒)</th>
+            <th style="text-align:center;">日在线率</th>
+            <th style="text-align:center;">#</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="project in projects">
+            <td style="text-align:left;">{{$index+1}}</td>
+            <td style="text-align:left;">{{project.platform_name}}</td>
+            <td style="text-align:left;">{{project.name}}</td>
+            <td style="text-align:center;">{{project.code}}</td>
+            <td style="text-align:left;">{{project.date}}</td>
+            <td style="text-align:center;">{{project.offtimes}}</td>
+            <td style="text-align:center;">{{project.offtime}}</td>
+            <td style="text-align:left;">{{project.percent}}</td>
+            <td style="text-align:left;"><a ng-click="edit($index)" class="btn btn-default btn-xs">处理</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+<!--       <div class="formactdion pull-left"> -->
+<!--         <a ui-sref="PackageAdd" class="btn btn-primary">新增</a> -->
+<!--       </div> -->
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="OnlineReport">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="OnlineReport">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn'>{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="OnlineReport">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="OnlineReport">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

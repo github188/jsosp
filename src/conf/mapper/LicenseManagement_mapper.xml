@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.LicenseManagementDAO">
+
+	<insert id="addLicense" parameterType="String">
+		INSERT INTO license_report (ID, PROJECT_NAME, ENABLED, CREATE_TIME, START_TIME,END_TIME,PROJECT_TYPE,TELEPHONE,DUETIME,IP) VALUES
+			(#{id},#{project_name},#{enabled},sysdate(),#{start_time},#{end_time},#{project_type},#{telephone},#{duetime},#{ip});
+	</insert>
+
+	<select id="queryLicenseManagementlists" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID AS ID,
+			PROJECT_NAME AS PROJECT_NAME,
+			ENABLED AS ENABLED,
+			CREATE_TIME AS CREATE_TIME,
+			START_TIME AS START_TIME,
+			END_TIME AS END_TIME,
+			PROJECT_TYPE AS PROJECT_TYPE,
+			TELEPHONE AS TELEPHONE,
+			DUETIME AS DUETIME,
+			IP AS IP
+		FROM
+			license_report 
+		order by CREATE_time desc
+		limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<select id="querylicenses" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID AS ID,
+			PROJECT_NAME AS PROJECT_NAME,
+			ENABLED AS ENABLED,
+			CREATE_TIME AS CREATE_TIME,
+			START_TIME AS START_TIME,
+			END_TIME AS END_TIME,
+			PROJECT_TYPE AS PROJECT_TYPE,
+			TELEPHONE AS TELEPHONE,
+			DUETIME AS DUETIME,
+			IP AS IP
+		FROM
+			license_report 
+		where ip LIKE CONCAT('%', #{ip}, '%') and PROJECT_NAME LIKE CONCAT('%', #{projectname}, '%')
+		order by CREATE_time desc
+		limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<select id="queryById" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID AS ID,
+			PROJECT_NAME AS PROJECT_NAME,
+			ENABLED AS ENABLED,
+			CREATE_TIME AS CREATE_TIME,
+			START_TIME AS START_TIME,
+			END_TIME AS END_TIME,
+			PROJECT_TYPE AS PROJECT_TYPE,
+			TELEPHONE AS TELEPHONE,
+			DUETIME AS DUETIME,
+			IP AS IP
+		FROM
+			license_report 
+		where id = #{id}
+	]]>
+	</select>
+	
+	<select id="queryLicenseManagementCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) AS LICENSEMANAGENMENTCOUNTS
+		FROM
+			license_report 
+	]]>
+	</select>
+	
+	<select id="queryLicenseManagementCountsByIpAndName" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) AS LICENSEMANAGENMENTCOUNTS
+		FROM
+			license_report 
+		where ip LIKE CONCAT('%', #{ip}, '%') and PROJECT_NAME LIKE CONCAT('%', #{projectname}, '%')
+	]]>
+	</select>
+	
+	<update id="updateById" parameterType="String">  
+        UPDATE license_report  
+            SET PROJECT_NAME = #{project},   
+                START_TIME = #{licensestartTime},  
+                END_TIME = #{licenseendTime},  
+                PROJECT_TYPE = #{project_type},  
+                TELEPHONE = #{telephone},  
+                DUETIME = #{duetime},
+                IP = #{ip}
+         WHERE id = #{id}  
+	</update>  
+
+</mapper>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.project.dao.ProjectDao">
+	<resultMap id="Project" type="com.jieshun.ops.project.model.Project">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="platform_id" property="platformId" jdbcType="VARCHAR" />
+		<result column="project_type" property="projectType" jdbcType="VARCHAR" />
+		<result column="watch" property="watch" jdbcType="INTEGER" />
+		<result column="watch_time_frame" property="watchTimeFrame" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="is_online" property="isOnline" jdbcType="INTEGER" />
+		<result column="create_user" property="createUser" jdbcType="VARCHAR" />
+		<result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<resultMap id="ProjectOnOffLine" type="com.jieshun.ops.project.model.ProjectOnOffLine">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="project_code" property="projectCode" jdbcType="VARCHAR" />
+		<result column="event_name" property="eventName" jdbcType="VARCHAR" />
+		<result column="event_time" property="eventTime" jdbcType="TIMESTAMP" />
+		<result column="handle_id" property="handleId" jdbcType="VARCHAR" />
+		
+	</resultMap>
+
+	<resultMap id="OfflineDayState" type="com.jieshun.ops.project.model.OfflineDayState">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="project_id" property="projectId" jdbcType="VARCHAR" />
+		<result column="state_date" property="stateDate" jdbcType="VARCHAR" />
+		<result column="offline_times" property="offlineTimes" jdbcType="INTEGER" />
+		<result column="offline_time" property="offlineTime" jdbcType="NUMERIC" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="project_Column_List">
+		id, code, name, platform_id, project_type,
+		watch,watch_time_frame,status,is_online,create_time,create_user,update_time,update_user,remark
+	</sql>
+
+	<sql id="onOfflineLog_Column_List">
+		id, project_code, event_name, event_time, handle_id
+	</sql>
+	
+	<sql id="offlineDayState_Column_List">
+		id, project_id, state_date, offline_times, offline_time,
+		create_time
+	</sql>
+	
+	<select id="selectWatchProject" resultMap="Project"
+		parameterType="java.lang.String">
+		select
+		<include refid="project_Column_List" />
+		from mas_project
+	</select>
+
+	<select id="lookupByProjectCode" resultMap="Project"
+		parameterType="java.lang.String">
+		select
+		<include refid="project_Column_List" />
+		from mas_project
+		where code = #{projectCode}
+	</select>
+	
+	<select id="selectOnOffLineEvents" resultMap="ProjectOnOffLine">
+		select
+		<include refid="onOfflineLog_Column_List" />
+		from LOG_PROJECT_ONOFFLINE
+		where project_code = #{projectCode} and date(event_time)=#{stateDate}
+	</select>
+	<select id="getProjectLastedOnOffLineEvent" resultMap="ProjectOnOffLine">
+		select
+		<include refid="onOfflineLog_Column_List" />
+		from LOG_PROJECT_ONOFFLINE
+		where project_code = #{projectCode} 
+		order by event_time desc limit 1
+	</select>
+	<!-- 根据项目ID及日期取项目当日的在线统计 -->
+	<select id="selectOfflineDayState" resultMap="OfflineDayState" parameterType="java.lang.String">
+		select
+		<include refid="offlineDayState_Column_List" />
+		from STA_PROJ_OFFLINE_DAY
+		where project_id = #{projectId} and date(state_date)=#{stateDate}
+	</select>
+	<!-- 根据平台ID取相关项目 -->
+	<select id="getPlatformProjects" resultMap="Project" parameterType="java.lang.String">
+		select
+		<include refid="project_Column_List" />
+		from mas_project
+		where platform_id = #{platformId} and watch=1
+	</select>
+	
+	<insert id="addOffLineDayState" parameterType="java.lang.String">
+		INSERT INTO STA_PROJ_OFFLINE_DAY (id, project_id, state_date, offline_times, offline_time,create_time) VALUES
+			(#{id},#{projectId},#{stateDate},#{offlineTimes},#{offlineTime},sysdate());
+	</insert>
+	
+	<update id = "updateOffLineDayState" parameterType = "java.lang.String">
+      UPDATE STA_PROJ_OFFLINE_DAY SET offline_times = #{offlineTimes}, 
+         offline_time = #{offlineTime}, update_time=sysdate()
+      WHERE ID = #{id};
+   </update>
+   <!-- 新增离线事件 -->
+   <insert id="addOnlineEvent" parameterType="java.lang.String">
+		INSERT INTO LOG_PROJECT_ONOFFLINE (id, project_code, event_name, event_time) VALUES
+			(#{id},#{projectCode},#{eventName},sysdate());
+	</insert>
+	
+	<insert id="batchAddOnlineEvent" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";">
+			INSERT INTO LOG_PROJECT_ONOFFLINE (id, project_code, event_name, event_time) VALUES
+            (#{item.id,jdbcType=VARCHAR},#{item.projectCode,jdbcType=VARCHAR},#{item.eventName,jdbcType=VARCHAR},sysdate())
+        </foreach>
+	</insert>
+	<!-- 更新项目是否在线状态 -->
+	<update id="updateProjectOnlineStatus">
+		UPDATE mas_project
+		set
+		update_time=sysdate() , is_online =#{onlineStatus} where code =#{projectCode}
+	</update>
+	<!-- 批量更新项目状态 -->
+	<update id="batchUpdateProjectOnlineStatus" parameterType="java.util.List">
+    	<foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+        	update mas_project  
+            <set>  
+            	update_time=sysdate(),
+                is_online=#{item.isOnline}  
+            </set>  
+            where code = ${item.code}  
+        </foreach> 
+    </update>
+	<update id="updateById" parameterType="java.util.List">
+    	update mas_project set TELPHONE = #{telphones} where id = #{projectid}
+    </update>
+
+	
+	<update id="updateproject">
+		UPDATE mas_project set watch=#{watch} where id =#{id}
+	</update>
+	<select id="quertByCode" resultType="java.util.HashMap">
+		select count(1) as COUNTS from mas_project where code = #{code}
+	</select>
+
+	<select id="queryProjectlists" resultType="java.util.HashMap">
+		SELECT
+			p.ID AS ID,
+			pp.PLATFORM_NAME AS PLAT_NAME,
+			p.CODE AS CODE,
+			p.NAME AS NAME,
+			p.WATCH AS WATCH
+		FROM
+			mas_project p
+		inner join mas_platform pp on p.PLATFORM_ID = pp.id
+		limit #{startpages},#{pageSize}
+	</select>
+
+	<insert id="add" parameterType="java.lang.String">
+		INSERT INTO mas_project (ID, CODE, NAME, PLATFORM_ID, WATCH,STATUS,CREATE_USER,CREATE_TIME) VALUES
+			(#{id},#{code},#{name},#{platform},1,'NOAMRL','',sysdate());
+	</insert>
+	<select id="queryProjectCountsByCondition" resultType="java.util.HashMap">
+	<![CDATA[
+		select 
+			count(1) as COUNTS 
+		from 
+			mas_project p 
+		inner join mas_platform pp on p.PLATFORM_ID = pp.id
+		where p.status='NORMAL' and pp.status='NORMAL' and p.name LIKE CONCAT('%', #{name}, '%') and p.code LIKE CONCAT('%', #{code}, '%')
+	]]>
+		<if test='platform != "" '>  
+			and pp.id= #{platform} 
+    	</if> 
+		<if test='watch != "" '>  
+			and p.WATCH= #{watch} 
+    	</if> 
+	</select>
+	<select id="queryProjectlistsByCondition" resultType="java.util.HashMap">
+	<![CDATA[
+		select 
+			p.ID as ID,
+			p.name as NAME,
+			p.code as CODE,
+			P.WATCH AS WATCH ,
+			pp.PLATFORM_NAME as PLATNAME
+		from 
+			mas_project p 
+		inner join mas_platform pp on p.PLATFORM_ID = pp.id
+		where p.status='NORMAL' and pp.status='NORMAL' and p.name LIKE CONCAT('%', #{name}, '%') and p.code LIKE CONCAT('%', #{code}, '%')
+	]]>
+		<if test='platform != "" '>  
+			and pp.id= #{platform} 
+    	</if> 
+    	<if test='watch != "" '>  
+			and p.WATCH= #{watch} 
+    	</if> 
+    	limit #{startpages},#{pageSize}
+	</select>
+	<select id="queryById" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			p.CODE AS CODE,
+			p.NAME AS NAME,
+			p.TELPHONE AS TELPHONE,
+			pp.PLATFORM_NAME AS PLATFORM_NAME
+		FROM
+			mas_project p
+		INNER JOIN mas_platform pp ON p.PLATFORM_ID = pp.id
+		where p.id = #{projectid}
+	]]>
+	</select>
+	
+</mapper>
+

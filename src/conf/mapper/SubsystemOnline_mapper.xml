@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.SubsystemOnlineDao" >
+  	
+	<select id="queryProjectList" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			p.id as ID,
+			p.CODE as CODE,
+			p.NAME as NAME,
+			p.TELPHONE as TELPHONE,
+			pp.PLATFORM_NAME as PLATFORM_NAME,
+			pp.OF_URL as OF_URL,
+			pp.OF_HOST_NAME as OF_HOST_NAME
+		FROM
+			mas_project p
+		INNER JOIN mas_platform pp ON p.PLATFORM_ID = pp.id
+		WHERE
+			p. STATUS = 'NORMAL'
+		AND pp. STATUS = 'NORMAL'
+		AND P.WATCH = 1
+		
+	]]>
+	</select>
+	
+	<!-- <update id="updateProjects" parameterType="list">
+		update mas_project
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="IS_ONLINE =case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.ID!=null">
+						when id=#{i.id} then #{i.online}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		set is_online = 1
+		where
+		<foreach collection="list" separator="or" item="i" index="index">
+			id=#{i.id}
+		</foreach>
+	</update>  --> 
+	
+	<update id="updateProjects"  parameterType="java.util.List">  
+        
+          <foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+                update mas_project   
+                <set>  
+                  IS_ONLINE=#{item.online}
+                </set>  
+                where id = #{item.id}  
+         </foreach>  
+            
+    </update>  
+    
+	<insert id="insertlogProjects" parameterType="java.util.List">
+	   INSERT INTO log_project_onofflinerecord (PROJECT_ID,EVENT_NAME,EVENT_TIME) 
+	   	VALUES 
+	   	 <foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.id},#{item.online},#{item.time})  
+    	</foreach>  
+  	</insert>
+  		
+</mapper>

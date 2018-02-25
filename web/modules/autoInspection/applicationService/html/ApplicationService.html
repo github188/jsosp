@@ -1,0 +1,75 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化部署管理</a></li>
+		  <li class="active">大表管理</li>
+		</ol>
+	</div>
+</div>
+<h1>大表管理</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="RDSManage">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div> 
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">列表&nbsp; &nbsp;<!-- <button type="button" ng-click="exportrds()" class="btn btn-primary">导出</button> --></h4>
+      <div class="col-md-6">
+	      <table class="table table-hover table-bordered">
+	        <thead>
+	          <tr>
+	            <th>#</th>
+	            <th>数据库</th>
+	            <th>表名</th>
+	            <th>行数</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr ng-repeat="bt in bts1">
+	            <td>{{$index+1}}</td>
+	            <td>{{bt.table_schema}}</td>
+	            <td>{{bt.table_name}}</td>
+	            <td>{{bt.table_rows}}</td>
+	          </tr>
+	        </tbody>
+	      </table>
+      </div>
+      <div class="col-md-6">
+	      <table class="table table-hover table-bordered">
+	        <thead>
+	          <tr>
+	            <th>#</th>
+	            <th>数据库</th>
+	            <th>表名</th>
+	            <th>行数</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr ng-repeat="bt in bts2">
+	          	<td>{{$index+1}}</td>
+	            <td>{{bt.table_schema}}</td>
+	            <td>{{bt.table_name}}</td>
+	            <td>{{bt.table_rows}}</td>
+	          </tr>
+	        </tbody>
+	      </table>
+      </div>
+    </div>
+<!--     <div class="row">
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="RDSManage">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="RDSManage">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn'>{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RDSManage">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RDSManage">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div> -->
+  </div>
+</div>

@@ -1,0 +1,91 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">项目在线率管理</a></li>
+		  <li class="active">实时在线情况</li>
+		</ol>
+		<h1>实时在线情况</h1>
+	</div>
+  <div class="col-md-5" style="margin-top:6%">
+    <ul class="nav nav-pills pull-right">
+      <li class="label label-info"><a style="color:black" ui-sref="ActualTimeOnlineReport">离线项目数 <span class="badge">{{counts}}</span></a></li>
+    </ul>          
+  </div>
+</div> 
+<div class="row" style="margin-top:1%">
+  <!-- <div class="col-md-2 margin-bottom-15">
+    <label for="customerCode" class="control-label">平台选择</label>
+      <select ng-change="chg()" class="form-control" ng-model="platformid" ng-options="platform.name for platform in platforms" required></select>
+  </div> -->
+  <div ng-repeat="project in projects track by $index">
+    <div class="col-md-3">
+  		<ng-echarts style="height:20rem;" class="col-md-12 echarts" ec-config="project.pieConfig1" ec-option="project.option1" ></ng-echarts>
+  	</div>
+  </div>
+  <!-- <div class="col-md-3">
+  	<ng-echarts style="height:30rem;" class="col-md-12 echarts" ec-config="pieConfig1" ec-option="option1" ></ng-echarts>
+  </div>
+  <div class="col-md-3">
+  	<ng-echarts style="height:30rem;" class="col-md-12 echarts" ec-config="pieConfig1" ec-option="option1" ></ng-echarts>
+  </div>
+  <div class="col-md-3">
+  	<ng-echarts style="height:30rem;" class="col-md-12 echarts" ec-config="pieConfig1" ec-option="option1" ></ng-echarts>
+  </div>
+  <div class="col-md-3">
+  	<ng-echarts style="height:30rem;" class="col-md-12 echarts" ec-config="pieConfig1" ec-option="option1" ></ng-echarts>
+  </div> -->
+</div>
+<!-- <div class="row">
+  <div class="col-md-12">
+      <div class="row">
+       <div class="col-md-2 margin-bottom-15">
+         <label for="customerCode" class="control-label">平台选择</label>
+           <select class="form-control" ng-model="platformid" ng-options="platform.name for platform in platforms" required></select>
+       </div>
+       
+       <div class="col-md-10 margin-bottom-15">
+         <br>
+         <button type="button" ng-click="query()" class="btn btn-primary">查询(轮询)</button><span style="color:red">{{msg}}</span>
+       </div>
+     </div>
+    <div class="">
+      <h4 class="margin-bottom-15">项目在线情况</h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th style="text-align:center;">#</th>
+            <th style="text-align:left;">平台名称</th>
+            <th style="text-align:center;">总项目数</th>
+            <th style="text-align:center;">离线项目数</th>
+            <th style="text-align:center;">离线项目占比</th>
+            <th style="text-align:left;">#</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="project in projects">
+            <td style="text-align:center;">{{$index+1}}</td>
+            <td style="text-align:left;">{{project.platform_name}}</td>
+            <td style="text-align:center;">{{project.allcounts}}</td>
+            <td style="text-align:center;">{{project.offcounts}}</td>
+            <td style="text-align:center;">{{project.offRate}}</td>
+            <td style="text-align:left;"><a ng-click="edit($index)" class="btn btn-default btn-xs">明细</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="formactdion pull-left">
+        <a ui-sref="PackageAdd" class="btn btn-primary">新增</a>
+      </div>
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="ActualTimeOnlineReport">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="ActualTimeOnlineReport">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn'>{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="ActualTimeOnlineReport">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="ActualTimeOnlineReport">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div> -->

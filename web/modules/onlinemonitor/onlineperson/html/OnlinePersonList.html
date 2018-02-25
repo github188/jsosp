@@ -1,0 +1,136 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">前端在线率监控</a></li>
+		  <li class="active">短信接收人列表</li>
+		</ol>
+	</div>
+</div>
+<h1>短信接收人</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="OnlinePersonList">总人数 <span class="badge">{{onlinePersonCounts}}</span></a></li>
+    </ul>          
+  </div>
+</div> 
+<div class="row">
+  <div class="col-md-12">
+     <div class="row">
+       <div class="col-md-3 margin-bottom-15">
+         <label for="customerName" class="control-label">接收人姓名</label>
+         <input type="text" class="form-control" id="customerCode" value="" required ng-model="account">
+       </div>
+       <div class="col-md-3 margin-bottom-15">
+         <label for="customerName" class="control-label">接收人手机号码</label>
+         <input type="text" class="form-control" id="customerCode" value="" required ng-model="telephone">
+       </div>
+       <div class="col-md-3 margin-bottom-15">
+       	 <br>
+         <button type="button" ng-click="query()" class="btn btn-primary">查询</button>
+       </div>
+     </div>
+    <div class="btn-group pull-right" id="templatemo_sort_btn">
+     <!--  <button type="button" class="btn btn-default">Sort by</button>
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="#">接口名称</a></li>
+        <li><a href="#">服务ID</a></li>
+        <li><a href="#">所属版本</a></li>
+      </ul>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-repeat="menu in menus"><a class="btn" ng-click="sortBy(menu)">{{menu}}</a></li>
+      </ul> -->
+    </div>
+    <div class="">
+      <h4 class="margin-bottom-15">接收人列表</h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>编辑</th>
+            <th>接收人姓名</th>
+            <th>所属公司</th>
+            <th>所属部门</th>
+            <th>接收人手机号码</th>
+            <th>创建时间</th>
+            <th>删除</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="onlinePerson in onlinePersonList">
+            <td>{{$index+1}}</td>
+            <td><a ng-click="edit(this)" class="btn btn-default btn-xs" data-toggle="modal" data-target="#add">编辑</a></td>
+            <td>{{onlinePerson.personname}}</td>
+            <td>{{onlinePerson.company}}</td>
+            <td>{{onlinePerson.department}}</td>
+            <td>{{onlinePerson.telephone}}</td>
+            <td>{{onlinePerson.createTime}}</td>
+            <td><a ng-click="delete(this)" class="btn btn-danger btn-xs">删除</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="formactdion pull-left">
+        <a class="btn btn-primary" data-toggle="modal" data-target="#add">新增</a>
+      </div>
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="OnlinePersonList">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="UsersList">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn'>{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="UsersList">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="UsersList">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+               	新增短信接收人
+            </h4>
+         </div>
+         <div class="modal-body">
+			<form name="myform" role="form" id="templatemo-preferences-form">
+				<div class="row">
+		          <div class="col-md-6 margin-bottom-15">
+		             <span class="label label-info">接收人姓名</span>
+            		 <input type="text" class="form-control" value="" required ng-model="personname">
+		          </div>
+		          <div class="col-md-6 margin-bottom-15">
+		             <span class="label label-info">所属公司</span>
+            		 <input type="text" class="form-control" value="" required ng-model="company">
+		          </div>
+		        </div>    
+				<div class="row">
+				  <div class="col-md-6 margin-bottom-15">
+		              <span class="label label-info">所属部门</span>
+            		  <input type="text" class="form-control" value="" required ng-model="department">
+		          </div>
+		          <div class="col-md-6 margin-bottom-15">
+		             <span class="label label-info">接收人手机号</span>
+            		 <input type="text" class="form-control" value="" required ng-model="telephone">
+		          </div>
+		        </div>    
+			</form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-click="save()">新增</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>

@@ -1,0 +1,126 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="#">报表管理</a></li>
+  <li class="active">在线率明细</li>
+</ol>
+<h1>在线率明细</h1>
+
+<div class="row margin-bottom-10">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="OnlineProjectDetail">记录数 <span class="badge">{{counts}}</span></a></li>
+    </ul>          
+  </div>
+</div>
+	
+<div class="row">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">项目在线日志</h4>
+      <table class="table table-hover table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th style="text-align:left;">#</th>
+            <th style="text-align:left;">项目名称</th>
+            <th style="text-align:center;">项目编号</th>
+            <th style="text-align:left;">事件名称</th>
+            <th style="text-align:left;">发生时间</th>
+            <th style="text-align:left;">处理结果</th>
+            <th style="text-align:left;">处理人</th>
+<!--             <th style="text-align:left;">选择</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="project in projects">
+<!--             <td style="text-align:left;">{{$index+1}}</td> -->
+            <td style="text-align:left;"><input type="checkbox" ng-model="project.check" value="opt1" ng-click="optchange($index)"></td>
+            <td style="text-align:left;">{{project.name}}</td>
+            <td style="text-align:center;">{{project.code}}</td>
+            <td style="text-align:left;">{{project.event_name}}</td>
+            <td style="text-align:left;">{{project.event_time}}</td>
+            <td style="text-align:left;">{{project.reason_type}}</td>
+            <td style="text-align:left;">{{project.create_user}}</td>
+<!--             <td style="text-align:left;"> -->
+<!--             	<input type="checkbox" ng-model="project.check" value="opt1" ng-click="optchange($index)"> -->
+<!-- 	        </td> -->
+<!--             <td> -->
+<!--              	<select ng-change="reasonchange($index)" class="form-control input-sm" ng-model="reason" ng-options="reason.name for reason in reasons" required> </select> -->
+<!-- 			</td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+       <div class="col-md-6 margin-bottom-15">
+         <label for="customerCode" class="control-label">处理原因</label>
+		 <select class="form-control input-sm" ng-model="reason" ng-options="reason.name for reason in reasons" required>
+<!-- 		 	<option value="">{{oo}}</option> -->
+		 </select>
+       </div>
+       <div class="col-md-6 margin-bottom-15">
+         <label for="customerCode" class="control-label">处理人</label>
+         <input type="text" class="form-control" id="customerCode" value="" required ng-model="handleUser">
+       </div>
+     </div>
+	<div class="row">
+       <div class="col-md-12 margin-bottom-15">
+         <label for="customerCode" class="control-label">备注</label>
+         <textarea class="form-control" rows="2" id="notes" ng-model='remark'></textarea>
+       </div>
+     </div>
+    <div class="row">
+      <div class="formactdion pull-left">
+        <a ng-click="save()" class="btn btn-primary">保存</a>
+      </div>
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="OnlineProjectDetail">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="OnlineProjectDetail">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn'>{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="OnlineProjectDetail">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="OnlineProjectDetail">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+               	处理离线事件
+            </h4>
+         </div>
+         <div class="modal-body">
+			<form name="myform1" role="form" id="templatemo-preferences-form">
+				<div class="row">
+		          <div class="col-md-4 margin-bottom-15">
+		             <span class="label label-info">项目名称</span>
+            		 <input type="text" class="form-control" value="" required ng-model="infoproject">
+		          </div>
+		          <div class="col-md-4 margin-bottom-15">
+		             <span class="label label-info">项目编号</span>
+            		 <input type="text" class="form-control" value="" required ng-model="infocode">
+		          </div>
+		          <div class="col-md-4 margin-bottom-15">
+		             <span class="label label-info">处理结果</span>
+					 <select class="form-control input-sm" ng-model="reason" ng-options="reason.name for reason in reasons" required>
+					 	<option value="">{{oo}}</option>
+					 </select>
+		          </div>
+		        </div>
+			</form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" ng-disabled="myform1.$invalid ||myform1.$pristine" 
+            		class="btn btn-primary" data-dismiss="modal" ng-click="reasonchange()">更新</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+         </div>
+      </div>
+   </div>
+</div> -->

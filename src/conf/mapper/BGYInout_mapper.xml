@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.BgyInoutDAO">
+
+	<select id="list" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID as ID,
+			check_time as CHECK_TIME,
+			check_date as CHECK_DATE,
+			in_records as IN_RECORDS,
+			out_records as OUT_RECORDS
+		FROM
+			bgy_in_out_records
+	    order by CHECK_TIME desc
+		limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<select id="queryCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) as COUNTS
+		FROM
+			bgy_in_out_records
+	]]>
+	</select>
+	
+</mapper>

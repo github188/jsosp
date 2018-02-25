@@ -1,0 +1,79 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">角色管理</a></li>
+		  <li class="active">角色列表</li>
+		</ol>
+	</div>
+</div>
+<h1>角色列表</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="RolesList">总接口数 <span class="badge">{{userscount}}</span></a></li>
+    </ul>          
+  </div>
+</div> 
+<div class="row">
+  <div class="col-md-12">
+     <div class="row">
+       <div class="col-md-3 margin-bottom-15">
+         <label for="customerName" class="control-label">角色名称</label>
+         <input type="text" class="form-control" id="customerName" value="" required ng-model="roleName" >
+       </div>
+       <div class="col-md-3 margin-bottom-15">
+       	 <br>
+         <button type="button" ng-click="query()" class="btn btn-primary">查询</button>
+       </div>
+     </div>
+    <!-- <div class="btn-group pull-right" id="templatemo_sort_btn">
+      <button type="button" class="btn btn-default">Sort by</button>
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="#">接口名称</a></li>
+        <li><a href="#">服务ID</a></li>
+        <li><a href="#">所属版本</a></li>
+      </ul>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-repeat="menu in menus"><a class="btn" ng-click="sortBy(menu)">{{menu}}</a></li>
+      </ul>
+    </div> -->
+    <div class="">
+      <h4 class="margin-bottom-15">项目列表</h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>角色名称</th>
+            <th>创建日期</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-mouseover="tableblur($index)" ng-mouseleave="tableleave()"  ng-repeat="role in roles track by $index">
+            <td style="{{role.style}}">{{$index+1}}</td>
+            <td style="{{role.style}}">{{role.roleName}}</td>
+            <td style="{{role.style}}">{{role.createTime}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="formactdion pull-left">
+        <a ui-sref="RoleAdd" class="btn btn-primary">新增</a>
+      </div>
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="RolesList" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="RolesList" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RolesList" style="backgroundcolor:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RolesList" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

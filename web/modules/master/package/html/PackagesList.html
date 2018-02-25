@@ -1,0 +1,124 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">外发包管理</a></li>
+		  <li class="active">外发包列表</li>
+		</ol>
+	</div>
+</div>
+<h1>外发包列表</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="RolesList">总包数 <span class="badge">{{userscount}}</span></a></li>
+    </ul>          
+  </div>
+</div> 
+<div class="row">
+  <div class="col-md-12">
+      <div class="row">
+       <!-- <div class="col-md-2 margin-bottom-15">
+         <label for="customerCode" class="control-label">所属服务组件</label>
+         <input type="text" class="form-control" id="customerCode" value="" required ng-model="componentId">
+       </div> -->
+       <div class="col-md-2 margin-bottom-15">
+          <label class="control-label">请选择服务类型</label>
+           <select class="form-control" ng-model="componentId" ng-options="service.label for service in services" required>
+        </select>
+       </div>
+       
+       <div class="col-md-2 margin-bottom-15">
+          <label for="customerName" class="control-label">版本日期</label>
+          <p class="input-group">
+            <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="versionDate" is-open="opened" close-text="Close" required/>
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="openCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </p>
+       </div>
+       <div class="col-md-2 margin-bottom-15">
+         <label for="customerCode" class="control-label">外发负责人</label>
+         <input type="text" class="form-control" id="customerCode" value="" required ng-model="principal">
+       </div>
+        <div class="col-md-2 margin-bottom-15">
+          <label for="customerCode" class="control-label">数据库脚本文件</label>
+          <p>
+          <label class="checkbox-inline" ng-click="click1()" >
+            <input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="hasDbScript">是否有数据库脚本文件
+          </label>
+       </div>
+        <div class="col-md-2 margin-bottom-15">
+          <label for="customerCode" class="control-label">参数文件</label>
+          <p>
+          <label class="checkbox-inline" ng-click="click1()" >
+            <input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="hasParaFile">是否有参数文件
+          </label>
+       </div>
+       <div class="col-md-2 margin-bottom-15">
+         <br>
+         <button type="button" ng-click="query()" class="btn btn-primary">查询</button>
+       </div>
+     </div>
+    <!-- <div class="btn-group pull-right" id="templatemo_sort_btn">
+      <button type="button" class="btn btn-default">Sort by</button>
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="#">接口名称</a></li>
+        <li><a href="#">服务ID</a></li>
+        <li><a href="#">所属版本</a></li>
+      </ul>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-repeat="menu in menus"><a class="btn" ng-click="sortBy(menu)">{{menu}}</a></li>
+      </ul>
+    </div> -->
+    <div class="">
+      <h4 class="margin-bottom-15">外发包列表</h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>所属服务组件</th>
+            <th>版本日期</th>
+            <th>外发负责人</th>
+            <th>是否有数据库脚本文件</th>
+            <th>是否有参数文件</th>
+            <th>外发包路径</th>
+            <th>上传时间</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr  ng-mouseover="tableblur($index)" ng-mouseleave="tableleave()"  ng-repeat="package in packages">
+            <td style="{{package.style}}">{{$index+1}}</td>
+            <td style="{{package.style}}">{{package.componentId}}</td>
+            <td style="{{package.style}}">{{package.versionDate}}</td>
+            <td style="{{package.style}}">{{package.principal}}</td>
+            <td style="{{package.style}}">{{package.hasDbScript}}</td>
+            <td style="{{package.style}}">{{package.hasParaFile}}</td>
+            <td style="{{package.style}}">{{package.keep_path}}</td>
+            <td style="{{package.style}}">{{package.createTime}}</td>
+            <td style="{{package.style}}">{{package.remark}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="formactdion pull-left">
+        <a ui-sref="PackageAdd" class="btn btn-primary">新增</a>
+      </div>
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a style="color:#fff;background-color:#5bc0de;border-color:#357ebd" ui-sref="PackagesList">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="PackagesList"style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="PackagesList" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="PackagesList" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

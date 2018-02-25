@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.report.dao.OnlineReportDAO" >
+  	
+	<select id="queryplatformlist" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID AS ID,
+			PLATFORM_NAME AS PLATFORM_NAME
+		FROM
+			mas_platform 
+		where status='NORMAL'
+	]]>
+	</select>
+	
+	<select id="queryprojectlistCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		select COUNT(1) as PROJECTLISTCOUNTS
+		from sta_proj_offline_day d
+		inner join mas_project p on d.PROJECT_ID = p.id 
+		inner join mas_platform pp on pp.id =p.PLATFORM_ID
+		where p.status='NORMAL' and pp.status='NORMAL'
+		and p.name LIKE CONCAT('%', #{projectname}, '%')
+		and p.code LIKE CONCAT('%', #{projectcode}, '%') and d.STATE_DATE >= #{starttime} and d.STATE_DATE <= #{endtime}
+		and d.OFFLINE_TIME>0 and d.OFFLINE_TIMES >0 and p.WATCH=1
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+	</select>
+	
+	<select id="actualTimeOnlineReportCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		select count(1) as COUNTS,COUNT(DISTINCT PP.ID) AS PLATCOUNTS 
+			from mas_project p
+		INNER join mas_platform pp on p.PLATFORM_ID=pp.ID
+		where p.IS_ONLINE=0 and pp.status='NORMAL' and p.WATCH=1
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+	</select>
+<!-- 	<select id="actualTimeOnlineReportCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		select count(1) as COUNTS,COUNT(DISTINCT PP.ID) AS PLATCOUNTS
+			from log_project_onoffline of
+		inner join (select PROJECT_CODE,max(off.EVENT_TIME) as tt from log_project_onoffline off group by PROJECT_CODE) a on a.tt=of.EVENT_TIME and a.PROJECT_CODE=of.PROJECT_CODE
+		inner join mas_project p on p.CODE=of.PROJECT_CODE
+		inner join  mas_platform pp on pp.id = p.PLATFORM_ID
+		where of.EVENT_NAME='OFFLINE'  and pp.status='NORMAL'
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+	</select> -->
+	
+	<select id="actualTimeOnlineReportlists" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ppp.PLATFORM_ID AS ID,
+			palt.PLATFORM_NAME AS PLATFORM_NAME,
+			CASE WHEN b.COUNTS is null THEN '0' ELSE b.COUNTS END AS ONCOUNTS,
+			CASE WHEN a.COUNTS is null THEN '0' ELSE a.COUNTS END AS OFFCOUNT
+		FROM
+			mas_project ppp
+		inner join mas_platform palt on ppp.PLATFORM_ID = palt.id
+		left  JOIN (
+			SELECT
+				pp.id AS PLATID,
+				pp.PLATFORM_NAME AS PLATFORM_NAME,
+				count(1) AS COUNTS
+			FROM
+				mas_project p
+			left JOIN mas_platform pp ON pp.id = p.PLATFORM_ID
+			WHERE
+				pp. STATUS = 'NORMAL'
+			AND p.WATCH = 1
+			and p.is_online = 0
+			GROUP BY
+				pp.id
+		) a ON ppp.PLATFORM_ID = a.PLATID
+		left join (
+		SELECT
+				pp.id AS PLATID,
+				pp.PLATFORM_NAME AS PLATFORM_NAME,
+				count(1) AS COUNTS
+			FROM
+				mas_project p
+			INNER JOIN mas_platform pp ON pp.id = p.PLATFORM_ID
+			WHERE
+				pp. STATUS = 'NORMAL'
+			AND p.WATCH = 1 
+			and p.is_online = 1
+			GROUP BY
+				pp.id
+		) b on ppp.PLATFORM_ID = b.PLATID
+		WHERE
+		palt.status='NORMAL'
+		AND ppp.WATCH = 1
+	]]>
+		<if test='platformid != "" '>  
+			and palt.id= #{platformid} 
+    	</if>  
+		group by palt.id
+<!-- 		limit #{startpages},#{pageSize} -->
+	</select>
+<!-- 	<select id="actualTimeOnlineReportlists" resultType="java.util.HashMap">
+	<![CDATA[
+		select a.PLATID as ID,a.PLATFORM_NAME as PLATFORM_NAME,count(1) as OFFCOUNT,a.COUNTS as ALLCOUNTS 
+			from mas_project ppp 
+		inner join (
+		select pp.id as PLATID,pp.PLATFORM_NAME as PLATFORM_NAME,count(1) as COUNTS from mas_project p
+		inner join mas_platform pp on pp.id =p.PLATFORM_ID where pp.status='NORMAL' and p.WATCH=1 group by pp.id ) a on ppp.PLATFORM_ID = a.PLATID
+		where ppp.is_online=0 and ppp.WATCH=1
+	]]>
+		<if test='platformid != "" '>  
+			and a.PLATID= #{platformid} 
+    	</if>  
+		group by a.PLATID
+		limit #{startpages},#{pageSize}
+	</select> -->
+<!-- 	<select id="actualTimeOnlineReportlists" resultType="java.util.HashMap">
+	<![CDATA[
+		select c.id as ID,c.PLATFORM_NAME as PLATFORM_NAME,c.COUNT as OFFCOUNT,count(1) as ALLCOUNTS from mas_platform ppp
+		inner join (
+		select pp.id as ID,pp.PLATFORM_NAME as PLATFORM_NAME,count(1) as COUNT 
+					from log_project_onoffline of
+				inner join (select PROJECT_CODE,max(off.EVENT_TIME) as tt from log_project_onoffline off group by PROJECT_CODE) a on a.tt=of.EVENT_TIME and a.PROJECT_CODE=of.PROJECT_CODE
+				inner join mas_project p on p.CODE=of.PROJECT_CODE
+				inner join  mas_platform pp on pp.id = p.PLATFORM_ID
+				where of.EVENT_NAME='OFFLINE' and pp.status='NORMAL'
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+		group by pp.ID ) c on ppp.id = c.id
+		inner join mas_project pt on pt.platform_id = ppp.id group by ppp.id
+		limit #{startpages},#{pageSize}
+	</select> -->
+	
+	<select id="actualTimeOnlineReportDetaillists" resultType="java.util.HashMap">
+	<![CDATA[
+		select offday.ID as ID,a.PROJECT_ID as PROJECT_ID,a.PLATFORM_NAME as PLATFORM_NAME,a.NAME as NAME,a.PROJECT_CODE as PROJECT_CODE,a.EVENT_NAME as EVENT_NAME,a.EVENT_TIME as EVENT_TIME 
+			from sta_proj_offline_day offday 
+		inner join 
+		(select p.id as PROJECT_ID ,pp.PLATFORM_NAME,p.name as NAME,p.code as PROJECT_CODE,off.EVENT_NAME as EVENT_NAME,max(off.EVENT_TIME) as EVENT_TIME
+					from mas_project p 
+				inner join mas_platform pp on p.PLATFORM_ID = pp.id
+				inner join log_project_onoffline off on off.PROJECT_CODE = p.code
+				where p.IS_ONLINE=0 and off.EVENT_NAME='OFFLINE' and pp.status='NORMAL' and p.WATCH=1
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+		group by p.id 
+		order by pp.PLATFORM_NAME ) a on a.PROJECT_ID = offday.PROJECT_ID and offday.STATE_DATE = DATE_FORMAT(a.EVENT_TIME,'%Y-%m-%d')
+	</select>
+<!-- 	<select id="actualTimeOnlineReportDetaillists" resultType="java.util.HashMap">
+	<![CDATA[
+		select pp.PLATFORM_NAME,p.name as NAME,p.code as PROJECT_CODE,off.EVENT_NAME as EVENT_NAME,max(off.EVENT_TIME) as EVENT_TIME 
+			from mas_project p 
+		inner join mas_platform pp on p.PLATFORM_ID = pp.id
+		inner join log_project_onoffline off on off.PROJECT_CODE = p.code
+		where p.IS_ONLINE=0 and off.EVENT_NAME='OFFLINE' and pp.status='NORMAL' and p.WATCH=1
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+		 group by p.id 
+		 order by pp.PLATFORM_NAME
+	</select> -->
+	
+<!-- 	<select id="actualTimeOnlineReportDetaillists" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			pp.PLATFORM_NAME as PLATFORM_NAME,p.name as NAME, a.PROJECT_CODE as PROJECT_CODE,of.EVENT_NAME as  EVENT_NAME,of.EVENT_TIME as EVENT_TIME
+		FROM
+			log_project_onoffline of
+		INNER JOIN (
+			SELECT
+				PROJECT_CODE,
+				max(off.EVENT_TIME) AS tt
+			FROM
+				log_project_onoffline off
+			GROUP BY
+				PROJECT_CODE
+		) a ON a.tt = of.EVENT_TIME
+		AND a.PROJECT_CODE = of.PROJECT_CODE
+		INNER JOIN mas_project p ON p. CODE = of.PROJECT_CODE
+		INNER JOIN mas_platform pp ON pp.id = p.PLATFORM_ID
+		WHERE
+			of.EVENT_NAME = 'OFFLINE'
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+		order by pp.PLATFORM_NAME
+	</select> -->
+	
+	<select id="queryofflineprojectlistCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		select COUNT(DISTINCT d.id) as PROJECTLISTCOUNTS
+		from sta_proj_offline_day d
+		inner join mas_project p on d.PROJECT_ID = p.id 
+		inner join mas_platform pp on pp.id =p.PLATFORM_ID
+		left join log_project_onoffline off on off.PROJECT_CODE = p.CODE
+		left join log_project_offline_handle offh on off.HANDLE_ID = offh.id
+		where p.status='NORMAL' and pp.status='NORMAL' and p.WATCH=1
+		and p.name LIKE CONCAT('%', #{projectname}, '%')
+		and p.code LIKE CONCAT('%', #{projectcode}, '%') and d.STATE_DATE >= #{starttime} and d.STATE_DATE <= #{endtime}
+		and d.OFFLINE_TIME>0 and d.OFFLINE_TIMES >0 and off.EVENT_NAME='OFFLINE' AND DATE_FORMAT(off.EVENT_TIME,'%Y-%m-%d') = d.STATE_DATE
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+		<if test='handle =="1" '>  
+        	and off.HANDLE_ID is not null
+    	</if>  
+		<if test='handle =="2" '>  
+        	and off.HANDLE_ID is null
+    	</if>  
+	</select>
+	
+	<select id="queryOnlineProjectlists" resultType="java.util.HashMap">
+	<![CDATA[
+		select 
+			d.id as ID,
+			pp.PLATFORM_NAME as PLATFORM_NAME,
+			p.CODE as PROJECT_CODE,
+			p.NAME as PROJECT_NAME,
+			d.STATE_DATE AS STATE_DATE,
+			d.OFFLINE_TIMES as OFFLINE_TIMES,
+			d.OFFLINE_TIME as OFFLINE_TIME
+		from sta_proj_offline_day d
+		inner join mas_project p on d.PROJECT_ID = p.id 
+		inner join mas_platform pp on pp.id =p.PLATFORM_ID
+		where p.status='NORMAL' and pp.status='NORMAL'  and p.WATCH=1
+		and p.name LIKE CONCAT('%', #{projectname}, '%')
+		and p.code LIKE CONCAT('%', #{projectcode}, '%') and d.STATE_DATE >= #{starttime} and d.STATE_DATE <= #{endtime}
+		and d.OFFLINE_TIME>0 and d.OFFLINE_TIMES >0
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+		order by STATE_DATE desc
+		limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="queryofflineProjectlists" resultType="java.util.HashMap">
+	<![CDATA[
+		select distinct
+			d.id as ID,
+			pp.PLATFORM_NAME as PLATFORM_NAME,
+			p.CODE as PROJECT_CODE,
+			p.NAME as PROJECT_NAME,
+			d.STATE_DATE AS STATE_DATE,
+			d.OFFLINE_TIMES as OFFLINE_TIMES,
+			d.OFFLINE_TIME as OFFLINE_TIME,
+			offh.CREATE_USER as CREATE_USER
+		from sta_proj_offline_day d
+		inner join mas_project p on d.PROJECT_ID = p.id 
+		inner join mas_platform pp on pp.id =p.PLATFORM_ID
+		left join log_project_onoffline off on off.PROJECT_CODE = p.CODE
+		left join log_project_offline_handle offh on off.HANDLE_ID = offh.id
+		where p.status='NORMAL' and pp.status='NORMAL'  and p.WATCH=1
+		and p.name LIKE CONCAT('%', #{projectname}, '%')
+		and p.code LIKE CONCAT('%', #{projectcode}, '%') and d.STATE_DATE >= #{starttime} and d.STATE_DATE <= #{endtime}
+		and d.OFFLINE_TIME>0 and d.OFFLINE_TIMES >0 and off.EVENT_NAME='OFFLINE' AND DATE_FORMAT(off.EVENT_TIME,'%Y-%m-%d') = d.STATE_DATE
+	]]>
+		<if test='platformid != "" '>  
+			and pp.id= #{platformid} 
+    	</if>  
+		<if test='handle =="1" '>  
+        	and off.HANDLE_ID is not null
+        	order by STATE_DATE desc
+			limit #{startpages},#{pageSize}
+    	</if>  
+		<if test='handle =="2" '>  
+        	and off.HANDLE_ID is null
+        	order by STATE_DATE desc
+			limit #{startpages},#{pageSize}
+    	</if>  
+		<if test='handle =="0" '>  
+			limit #{startpages},#{pageSize}
+    	</if>  
+	</select>
+	
+	<select id="onlinereportdetail" resultType="java.util.HashMap">
+	<![CDATA[
+		select 
+			o.id as ID,
+			p.CODE as CODE,
+			p.NAME as NAME,
+			o.EVENT_TIME as EVENT_TIME,
+			o.EVENT_NAME as EVENT_NAME,
+			oh.REASON_TYPE as REASON_TYPE,
+			oh.CREATE_USER as CREATE_USER
+		from log_project_onoffline o 
+		inner join mas_project p on p.CODE = o.PROJECT_CODE
+		left join log_project_offline_handle oh on oh.id =o.HANDLE_ID
+		inner join 
+		(select project_id ,state_date from sta_proj_offline_day where id = #{id}) a on a.project_id=p.ID
+		where o.EVENT_TIME like CONCAT(a.state_date, '%') and o.event_name='OFFLINE' and p.WATCH=1
+		limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<select id="onlinereportdetailCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		select 
+			count(1) as counts
+		from log_project_onoffline o 
+		inner join mas_project p on p.CODE = o.PROJECT_CODE
+		inner join 
+		(select project_id ,state_date from sta_proj_offline_day where id = #{id}) a on a.project_id=p.ID
+		where o.EVENT_TIME like CONCAT(a.state_date, '%') and o.event_name='OFFLINE' and p.WATCH=1
+	]]>
+	</select>
+	
+	<insert id="inserthandleByofflineId" parameterType="String">
+		INSERT INTO log_project_offline_handle (id, HANDLE_TIME, REASON_TYPE,CREATE_TIME,UPDATE_TIME,CREATE_USER,REMARK) VALUES
+			(#{id},sysdate(),#{reason},sysdate(),sysdate(),#{create_user},#{remark});
+	</insert>
+	
+	<update id="updateofflineByid" parameterType="String">  
+        UPDATE log_project_onoffline  
+            SET HANDLE_ID = #{handleId}
+         WHERE id = #{id}  
+	</update>  
+	
+	<select id="queryofflineHandleById" resultType="java.util.HashMap">
+	<![CDATA[
+		select HANDLE_ID AS HANDLE_ID from log_project_onoffline o
+		inner join log_project_offline_handle off on off.id = o.handle_id
+		where o.id = #{id} limit 1
+	]]>
+	</select>
+	
+	<update id="updatehandleHandleId" parameterType="String">
+		update log_project_offline_handle 
+			set REASON_TYPE = #{reason},
+				UPDATE_TIME = sysdate(),
+				REMARK = #{remark},
+				CREATE_USER = #{create_user}
+		where id = #{id}
+	</update>
+	
+</mapper>

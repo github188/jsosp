@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+  <title>捷顺科技运维中心运维管理平台</title>
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" href="images/logo.ico" type="image/x-icon"/> 
+  <link rel="stylesheet" type="text/css" href="css/templatemo_main.css">
+  <link rel="stylesheet" type="text/css" href="css/angular-chart.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/fileinput.min.css">
+  <link rel="stylesheet" type="text/css" href="css/ngDialog.min.css">
+  <link rel="stylesheet" type="text/css" href="css/ngDialog-theme-default.min.css">
+  <link rel="stylesheet" type="text/css" href="css/ngDialog-theme-plain.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-select.css">
+  <style type="text/css">
+  body {  
+	    margin: 0;  
+	    padding:0;
+    background-image: url('images/background.jpg');    
+    background-repeat:no-repeat;  
+        background-position:0% 0%;  
+        height: 100%;
+    background-size:cover;  
+    	  background-attachment: fixed;
+	  overflow: scroll;
+/*     background-color: #22C3AA;  */
+}  
+#leftpanel {
+  color:#fff;background-color:#5bc0de;border-color:#46b8da
+}  
+/* 	th{ */
+/*     	text-align:center; */
+/* 	} */
+/* 	td{ */
+/*     	text-align:center; */
+/* 	} */
+  </style>
+<!-- 
+Dashboard Template 
+http://www.templatemo.com/preview/templatemo_415_dashboard
+-->
+</head>
+  <body ng-app="jsywp" ng-controller="indexCtrl">
+    <div id="main-wrapper" class="{{main}}" >
+      <div ng-include="'layout/top.html'"></div>
+      <div class="row">
+        <div class="col-md-2 margin-bottom-30">
+          <ul class="templatemo-sidebar-menu">
+           <!--  <li>
+              <form class="navbar-form">
+                <input type="text" class="form-control" id="templatemo_search_box" placeholder="Search...">
+                <span class="btn btn-default">Go</span>
+              </form>
+            </li> -->
+            <br><br><br><br>
+            <div>
+              <accordion close-others='status.closeothers'>
+               <!--  <accordion-group>
+                  <accordion-heading>
+                    <ul class="nav nav-pills nav-stacked">
+                      <li><i class="fa fa-home"></i><span><a ui-sref="index">&nbsp; &nbsp;首页</a></span></li>
+                    </ul>
+                  </accordion-heading>
+                </accordion-group>
+
+                <accordion-group is-open='status.isoneopen' is-disable='status.isonedisable'>
+                  <accordion-heading>
+                    <ul class="nav nav-pills nav-stacked">
+                      <li><i class="fa fa-database"></i><span><a href="#">&nbsp; &nbsp;项目在线率管理</a></span></li>
+                    </ul>
+                  </accordion-heading>
+                   <ul class="nav nav-pills nav-stacked">
+                    <li><a ui-sref="ProjectList">接入项目档案</a></li>
+                    <li><a ui-sref="ProjectOnlineList">项目在线日志管理</a></li>
+                    <li><a ui-sref="ProjectOnlineState">项目在线率统计分析</a></li>
+                  </ul>
+                </accordion-group>
+                <accordion-group heading='two'>
+                  <accordion-heading>
+                    <ul class="nav nav-pills nav-stacked">
+                      <li><i class="fa fa-database"></i><span><a href="#">&nbsp; &nbsp;API接入管理</a></span></li>
+                    </ul>
+                  </accordion-heading>
+                   <ul class="nav nav-pills nav-stacked">
+                    <li><a ui-sref="APICustomerList">API接入客户档案</a></li>
+                    <li><a ui-sref="APIProjectList">API接入项目档案</a></li>
+                    <li><a ui-sref="APIProjectState">API接入项目统计分析</a></li>
+                    <li><a ui-sref="APIList">API接口清单</a></li>
+                  </ul>
+                </accordion-group> -->
+                <accordion-group heading='one' is-open='true' is-disable='false' class ='{{one}} panel panel-info'>
+                  <accordion-heading>
+                    <ul class="nav nav-pills nav-stacked">
+                      <li><i class="fa fa-database"></i><span><a href="#">&nbsp; &nbsp;用户角色管理</a></span></li>
+                    </ul>
+                  </accordion-heading>
+                   <ul class="nav nav-pills nav-stacked">
+                    <li><a ui-sref="UsersList" id="leftpanel">用户管理</a></li>
+                    <li><a ui-sref="RolesList" id="leftpanel">角色管理</a></li>
+                    <li><a ui-sref="PackagesList" id="leftpanel">外发包管理</a></li>
+<!--                     <li><a ui-sref="ProjectList">项目管理</a></li> -->
+                  </ul>
+                </accordion-group>
+                <accordion-group heading='two' class ='{{two}} panel panel-info'>
+                  <accordion-heading>
+                    <ul class="nav nav-pills nav-stacked">
+                      <li><i class="fa fa-database"></i><span><a href="#">&nbsp; &nbsp;自动化部署管理</a></span></li>
+                    </ul>
+                  </accordion-heading>
+                   <ul class="nav nav-pills nav-stacked">
+                   <!--  <li><a ui-sref="Hosts">主机档案</a></li>
+                    <li><a ui-sref="Projects">项目档案</a></li>
+                    <li><a ui-sref="Services">服务档案</a></li> -->
+                    <li><a ui-sref="CheckProperties" id="leftpanel">自动化部署</a></li>
+<!--                     <li><a ui-sref="Automation">自动化部署</a></li> -->
+                    <li><a ui-sref="BackUp" id="leftpanel">版本回退</a></li>
+                    <li><a ui-sref="Restart" id="leftpanel">定时重启</a></li>
+                    <li><a ui-sref="Machine" id="leftpanel">机器码获取</a></li>
+                    <li><a ui-sref="QueryHistoryDeployed" id="leftpanel">历史部署查询</a></li>
+                    <li><a ui-sref="LicenseManagement" id="leftpanel">License报警管理</a></li>
+                    <li><a ui-sref="DataDelete" id="leftpanel">数据删除任务</a></li>
+                    <li><a ui-sref="RDSManage" id="leftpanel">RDS管理</a></li>
+                    <li><a ui-sref="BigTableMonitor" id="leftpanel">大表管理</a></li>
+<!--                     <li><a ui-sref="DBRequest">数据库申请</a></li> -->
+                  </ul>
+                </accordion-group>
+                <accordion-group heading='three' class ='{{three}} panel panel-info'>
+                  <accordion-heading>
+                    <ul class="nav nav-pills nav-stacked">
+                      <li><i class="fa fa-database"></i><span><a href="#">&nbsp; &nbsp;监控管理</a></span></li>
+                    </ul>
+                  </accordion-heading>
+                  <accordion close-others='status.closeothers'>
+	                <accordion-group heading='five' is-open='true' is-disable='false'>
+	                  <accordion-heading>
+	                    <ul class="nav nav-pills nav-stacked">
+	                      <li><i class="glyphicon glyphicon-arrow-right"></i><span><a href="#" style="font-size:1rem">前端在线率监控</a></li>
+	                    </ul>
+	                  </accordion-heading>
+	                   <ul class="list-unstyled">
+<!-- 	                    <li><span><a ui-sref="OnlinePersonList">&nbsp; &nbsp;&nbsp; &nbsp;短信接收人管理</a></span></li> -->
+<!-- 	                    <li><span><a ui-sref="Restart">&nbsp; &nbsp;&nbsp; &nbsp;角色管理</a></span></li> -->
+<!-- 	                    <li><span><a ui-sref="Restart">&nbsp; &nbsp;&nbsp; &nbsp;策略管理</a></span></li> -->
+	                    <li><span><a id="leftpanel" ui-sref="Project">&nbsp; &nbsp;&nbsp; &nbsp;项目管理</a></span></li>
+<!-- 	                    <li><span><a ui-sref="Restart">&nbsp; &nbsp;&nbsp; &nbsp;角色分配管理</a></span></li> -->
+<!-- 	                    <li><span><a ui-sref="Restart">&nbsp; &nbsp;&nbsp; &nbsp;策略分配管理</a></span></li> -->
+	                  </ul>
+	                </accordion-group>
+                  </accordion>
+                  </accordion-heading>
+                  <!-- <accordion close-others='status.closeothers'>
+	                <accordion-group heading='five' is-open='true' is-disable='false'>
+	                  <accordion-heading>
+	                    <ul class="nav nav-pills nav-stacked">
+	                      <li><i class="glyphicon glyphicon-arrow-right"></i><span><a href="#">&nbsp; &nbsp;ELk监控</a></li>
+	                    </ul>
+	                  </accordion-heading>
+	                   <ul class="list-unstyled">
+	                    <li><span><a ui-sref="CardMappedMonitor">&nbsp; &nbsp;&nbsp; &nbsp;ELK卡映射监控</a></span></li>
+	                  </ul>
+	                </accordion-group>
+                  </accordion> -->
+                </accordion-group>
+                <accordion-group heading='four' class ='{{four}} panel panel-info'>
+                  <accordion-heading>
+                    <ul class="nav nav-pills nav-stacked">
+                      <li><i class="fa fa-database"></i><span><a href="#">&nbsp; &nbsp;自动化巡检</a></span></li>
+                    </ul>
+                  </accordion-heading>
+                  <accordion close-others='false'>
+	                <accordion-group heading='four' is-open='true' is-disable='false'>
+	                  <accordion-heading>
+	                    <ul class="nav nav-pills nav-stacked">
+	                      <li><i class="glyphicon glyphicon-arrow-right"></i><span><a href="#" style="font-size:1rem">中间件</a></li>
+	                    </ul>
+	                  </accordion-heading>
+	                   <ul class="list-unstyled">
+	                    	<li><span><a  id="leftpanel" style="font-size:1rem" ui-sref="RedisBigKeyMonitor">&nbsp; &nbsp;Redis大键监控</a></span></li>
+	                    	<li><span><a  id="leftpanel" style="font-size:1rem" ui-sref="RdsSlowLog">&nbsp; &nbsp;RDS慢sql</a></span></li>
+	                    	<li><span><a  id="leftpanel" style="font-size:1rem" ui-sref="RedisResource">&nbsp; &nbsp;Redis资源检测</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="NginxInfo">&nbsp; &nbsp;IP访问次数</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="NginxDetail">&nbsp; &nbsp;车场调用访问明细</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="Lockwait">&nbsp; &nbsp;关键平台锁等待</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="SlowSql">&nbsp; &nbsp;关键平台慢sql</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="Processlist">&nbsp; &nbsp;DB活动任务检查</a></span></li>
+	                   </ul>
+	                </accordion-group>
+	                <accordion-group heading='four' is-open='false' is-disable='false'>
+	                  <accordion-heading>
+	                    <ul class="nav nav-pills nav-stacked">
+	                      <li><i class="glyphicon glyphicon-arrow-right"></i><span><a href="#" style="font-size:1rem">应用服务</a></span></li>
+	                    </ul>
+	                  </accordion-heading>
+	                   <ul class="list-unstyled">
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="HttpCheck">&nbsp; &nbsp;HTTP服务检测</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="ApiData">&nbsp; &nbsp;API数据</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="Bgyinout">&nbsp; &nbsp;碧桂园出入场数据</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="WankeUnsubmitSubsystem">&nbsp; &nbsp;万科未上传子系统</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="Discount">&nbsp; &nbsp;打折日志查询</a></span></li>
+	                   </ul>
+	                </accordion-group>
+	                <accordion-group heading='four' is-open='false' is-disable='false'>
+	                  <accordion-heading>
+	                    <ul class="nav nav-pills nav-stacked">
+	                      <li><i class="glyphicon glyphicon-arrow-right"></i><span><a href="#" style="font-size:1rem">一键巡检</a></span></li>
+	                    </ul>
+	                  </accordion-heading>
+	                   <ul class="list-unstyled">
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="Inspection">&nbsp; &nbsp;一键巡检</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="RdsSlowLogOneKey">&nbsp; &nbsp;RDS慢sql</a></span></li>
+	                    	<li><span><a id="leftpanel" style="font-size:1rem" ui-sref="HttpCheckOneKey">&nbsp; &nbsp;HTTP服务检测</a></span></li>
+	                   </ul>
+	                </accordion-group>
+	                <!-- <accordion-group heading='four' is-open='false' is-disable='false'>
+	                  <accordion-heading>
+	                    <ul class="nav nav-pills nav-stacked">
+	                      <li><i class="glyphicon glyphicon-arrow-right"></i><span><a href="#">&nbsp; &nbsp;文档下载</a></li>
+	                    </ul>
+	                  </accordion-heading>
+	                   <ul class="list-unstyled">
+	                    	<li><span><a ui-sref="Download">&nbsp; &nbsp;&nbsp; &nbsp;文档下载</a></span></li>
+	                   </ul>
+	                </accordion-group> -->
+                  </accordion>
+                </accordion-group>                
+                <accordion-group heading='five' class ='{{five}} panel panel-info'>
+                  <accordion-heading>
+                    <ul class="nav nav-pills nav-stacked">
+                      <li><i class="fa fa-database"></i><span><a href="#">&nbsp; &nbsp;项目在线率管理</a></span></li>
+                    </ul>
+                  </accordion-heading>
+                   <ul class="nav nav-pills nav-stacked">
+<!--                     <li><a ui-sref="OnlineReport">在线率报表</a></li> -->
+<!--                     <li><a ui-sref="OfflineHandleReport">离线事件处理</a></li> -->
+                    <li><a ui-sref="ActualTimeOnlineReport" id="leftpanel">项目离线监控</a></li>
+                    <li><a ui-sref="CardMappedMonitor" id="leftpanel">卡映射监控</a></li>
+                  </ul>
+                </accordion-group>                
+              </accordion>
+
+            </div>
+
+<!--             <a class="col-md-offset-2 label label-primary" style="background:#DEDCDC;height:2px" href="" data-toggle="modal" data-target="#myModal"><i class="fa fa-sign-out"></i>Sign Out</a> -->
+          </ul>
+        </div>
+        <!--/.navbar-collapse -->
+        <!-- data start -->
+        <div class="col-md-10" style="margin-top:1%;color:white;background-color:transparent">
+          <div class="">
+            <div ui-view></div>
+          </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+           <div class="modal-dialog">
+              <div class="modal-content">
+                 <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                          &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                       Are you sure you want to sign out?
+                    </h4>
+                 </div>
+                 <!--<div class="modal-body">
+                    在这里添加一些文本
+                 </div>-->
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="signout()">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                 </div>
+              </div><!-- /.modal-content -->
+           </div><!-- /.modal -->
+        </div>
+        <div ng-include="'layout/bottom.html'"></div>
+      </div>
+    </div>
+
+  <div  ng-keyup="myKeyup($event)" id="main-wrapper" class="{{signin}}" >
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="navbar-header">
+        <div class="logo"><img src="images/logo.png"/><h1>捷顺科技运维管理平台</h1></div>
+      </div>
+      <div class="pull-right" style="margin: 12px 10px;">
+<!--       	<a class="btn btn-info btn-xs" href="http://10.10.205.13:9090/index.html" target="view_window">elk报表</a> -->
+<!--       	<a class="btn btn-info btn-xs" href="" data-toggle="modal" data-target="#myModal"><i class="fa fa-sign-out"></i>登出</a> -->
+      </div>
+    </div>
+    <div class="template-page-wrapper">
+      <form class="form-horizontal templatemo-signin-form" role="form" action="index.html" method="get">
+        <div class="form-group">
+          <div class="col-md-12">
+            <label for="username" class="col-sm-2 control-label"><b style="color:white">用户<b></label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="username" placeholder="Username" ng-model="account">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-12">
+            <label for="password" class="col-sm-2 control-label"><b style="color:white">密码</b></label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="password" placeholder="Password" ng-model="passwd">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-12">
+            <div class="col-sm-offset-2 col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"><b style="color:white"> 记住我</b>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-12">
+            <div class="col-sm-offset-2 col-sm-10">
+              <input type="登录" value="Sign in" ng-click="login()" class="btn btn-default">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+    <script src="js/common/jquery.min.js"></script>
+    <script src="js/common/angular-1.3.0.js"></script>
+    <script src="js/common/angular-ui-router.js"></script>
+    <script src="js/common/ng-file-upload.min.js"></script>
+    <script src="js/common/ngDialog.min.js"></script>
+    <script src="js/common/ui-bootstrap-tpls-0.11.0.js"></script>
+    <script src="js/common/bootstrap.min.js"></script>
+    <script src="js/common/Chart.min.js"></script>
+    <script src="js/common/angular-chart.min.js"></script>
+    <script src="js/common/angular-cookies.js"></script>
+    <script src="js/common/bootstrap-select.js"></script>
+    <script src="js/common/echarts.js"></script>
+    <script src="js/common/ng-echarts.min.js"></script>
+    <script src="js/common/particles.min.js"></script>
+    <!--<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/angular.js/1.3.0/angular.min.js"></script>
+    <script src="http://cdn.bootcss.com/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
+    <script src="js/common/ng-file-upload.min.js"></script>
+    <script src="http://cdn.bootcss.com/ng-dialog/0.5.9/js/ngDialog.min.js"></script>
+    <script src="http://cdn.bootcss.com/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="http://cdn.bootcss.com/Chart.js/1.0.1/Chart.min.js"></script>
+    <script src="http://cdn.bootcss.com/angular-chart.js/0.10.1/angular-chart.min.js"></script>-->
+
+    <script src="js/common/templatemo_script.js"></script>
+    <script src="js/app.js"></script>
+    <script src="modules/autode/appdeploy/js/appdeploy.js"></script>
+    <script src="modules/autode/appdeploy/js/RDSManage.js"></script>
+    <script src="modules/autode/appdeploy/js/BigTableMonitor.js"></script>
+    <script src="modules/autode/appdeploy/js/DBRequest.js"></script>
+    <script src="modules/security/user/js/user.js"></script>
+    <script src="modules/security/role/js/role.js"></script>
+    <script src="modules/master/package/js/package.js"></script>
+    <script src="modules/onlinemonitor/onlineperson/js/OnlinePersonList.js"></script>
+    <script src="modules/autode/appdeploy/js/DataDelete.js"></script>
+    <script src="modules/autode/appdeploy/js/LicenseManagement.js"></script>
+    <script src="modules/report/onlineMonitor/js/OnlineReport.js"></script>
+    <script src="modules/onlinemonitor/elk/js/CardMappedMonitor.js"></script>
+    <script src="modules/onlinemonitor/project/js/Project.js"></script>
+    <script src="modules/autoInspection/applicationService/js/ApplicationService.js"></script>
+    <script src="modules/autoInspection/download/js/Download.js"></script>
+    <script src="modules/autoInspection/inspection/js/Inspection.js"></script>
+    <script src="modules/autoInspection/middleware/js/Middleware.js"></script>
+    <script src="modules/autoInspection/redisBigKeyMonitor/js/RedisBigKeyMonitor.js"></script>
+    <script src="modules/autoInspection/rdsSlowLog/js/RdsSlowLog.js"></script>
+    <script src="modules/autoInspection/httpCheck/js/HttpCheck.js"></script>
+    <script src="modules/autoInspection/redisResource/js/RedisResource.js"></script>
+    <script src="modules/autoInspection/apiData/js/ApiData.js"></script>
+    <script src="modules/autoInspection/bgyinout/js/bgyinout.js"></script>
+    <script src="modules/autoInspection/rdsSlowLogOneKey/js/rdsSlowLogOneKey.js"></script>
+    <script src="modules/autoInspection/HttpCheckOneKey/js/HttpCheckOneKey.js"></script>
+    <script src="modules/autoInspection/WankeUnsubmitSubsystem/js/WankeUnsubmitSubsystem.js"></script>
+    <script src="modules/autoInspection/nginx/js/nginxInfo.js"></script>
+    <script src="modules/autoInspection/nginx/js/nginxDetail.js"></script>
+    <script src="modules/autoInspection/lockwait/js/lockwait.js"></script>
+    <script src="modules/autoInspection/lockwait/js/slowsql.js"></script>
+    <script src="modules/autoInspection/lockwait/js/processlist.js"></script>
+    <script src="modules/autoInspection/discount/js/Discount.js"></script>
+    <script src="js/services.js"></script>
+<!--     <script type="text/javascript"> 
+ 	    var blog = {{ List|safe }};
+ 	    alert(blog);
+ 	</script> -->
+  </body>
+</html>

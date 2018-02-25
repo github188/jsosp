@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.dao.DcMonitorTaskDao">
+
+	<select id="listDC" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID as ID,
+			STAT_DATE as STAT_DATE,
+			STAT_TYPE as STAT_TYPE,
+			PARK_CODE as PARK_CODE,
+			TOTAL_NUM as TOTAL_NUM
+		FROM
+			ct_rc_data_rec_stat
+		where STAT_TYPE = 'mb.park.in' AND STAT_DATE = #{yestd}
+	]]>
+	</select>
+	
+	<select id="listOutDC" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID as ID,
+			STAT_DATE as STAT_DATE,
+			STAT_TYPE as STAT_TYPE,
+			PARK_CODE as PARK_CODE,
+			TOTAL_NUM as TOTAL_NUM
+		FROM
+			ct_rc_data_rec_stat
+		where STAT_TYPE = 'mb.park.out' AND STAT_DATE = #{yestd}
+	]]>
+	</select>
+	
+	<select id="listDCProjects" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			ID as ID,
+			CODE as CODE,
+			NAME as NAME,
+			DC_WATCH as DC_WATCH
+		FROM
+			mas_project
+		where DC_WATCH = 1
+	]]>
+	</select>
+	
+	<select id="listjsifsInProjects" resultType="java.util.HashMap" parameterType="java.util.List">
+		SELECT
+			CONTROLUNITID as ID, 
+			#{yestd} as STAT_DATE,
+		  	b.CODE as CODE,
+		 	b.NAME as NAME,
+			COUNT(0) as COUNTS
+		FROM
+			np_dt_park_in a  force index(IDX_CR_CA_SU_EQ)
+		LEFT JOIN np_sys_controlunit b ON a.CONTROLUNITID = b.ID
+		WHERE
+			a.IN_TIME > #{yestd} and #{today}> a.IN_TIME and a.CONTROLUNITID IN ( SELECT ID FROM np_sys_controlunit WHERE CODE IN 
+		<if test='null != projects and projects.size > 0'>  
+			<foreach item="item" index="index" collection="projects" 
+	                         open="(" separator="," close=")">
+	                        #{item}
+	        </foreach>
+    	</if>
+		)  GROUP BY CONTROLUNITID 
+	</select>
+	
+	<select id="listjsifsOutProjects" resultType="java.util.HashMap" parameterType="java.util.List">
+		SELECT
+			CONTROLUNITID as ID, 
+			#{yestd} as STAT_DATE,
+		  	b.CODE as CODE,
+		 	b.NAME as NAME,
+			COUNT(0) as COUNTS
+		FROM
+			np_dt_park_out a  force index(IDX_CR_CA_SU_EQ)
+		LEFT JOIN np_sys_controlunit b ON a.CONTROLUNITID = b.ID
+		WHERE
+			a.OUT_TIME > #{yestd} and #{today}> a.OUT_TIME and a.CONTROLUNITID IN ( SELECT ID FROM np_sys_controlunit WHERE CODE IN 
+		<if test='null != projects and projects.size > 0'>  
+			<foreach item="item" index="index" collection="projects" 
+	                         open="(" separator="," close=")">
+	                        #{item}
+	        </foreach>
+    	</if>
+		)  GROUP BY CONTROLUNITID 
+	</select>
+	
+	<insert id="insertJsifs" parameterType="java.util.List">
+	   INSERT INTO dc_data_monitor (ID,STAT_DATE,STAT_TYPE,PARK_CODE,IN_DC_TOTAL_NUM,IN_JSIFS_TOTAL_NUM,OUT_JSIFS_TOTAL_NUM) 
+	   	VALUES 
+	   	 <foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.ID},DATE_FORMAT(DATE_SUB(curdate(),INTERVAL 1 DAY),'%Y-%m-%d'),'mb.park.in',#{item.CODE},0,0,0)  
+    	</foreach>  
+  	</insert>
+  	
+	<update id="updateJsifs" parameterType="java.util.List">
+	   <foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+                update dc_data_monitor   
+                <set>  
+                  IN_JSIFS_TOTAL_NUM= #{item.COUNTS}
+                </set>  
+                where STAT_DATE = #{item.STAT_DATE} and PARK_CODE = #{item.CODE}
+      </foreach>  
+  	</update>
+  	
+	<update id="updateOutJsifs" parameterType="java.util.List">
+	   <foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+                update dc_data_monitor   
+                <set>  
+                  OUT_JSIFS_TOTAL_NUM= #{item.COUNTS}
+                </set>  
+                where STAT_DATE = #{item.STAT_DATE} and PARK_CODE = #{item.CODE}
+      </foreach>  
+  	</update>
+  	
+	<update id="updatePics" parameterType="java.util.List">
+	   <foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+                update dc_data_monitor   
+                <set>  
+                  IN_HAS_PIC= #{item.PICCOUNTS}
+                </set>  
+                where REPLACE (STAT_DATE,'-','') = #{item.TIME} and PARK_CODE = #{item.CODE}
+      </foreach>  
+  	</update>
+  	
+	<update id="updateOutPics" parameterType="java.util.List">
+	   <foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+                update dc_data_monitor   
+                <set>  
+                  OUT_HAS_PIC= #{item.PICCOUNTS}
+                </set>  
+                where REPLACE (STAT_DATE,'-','') = #{item.TIME} and PARK_CODE = #{item.CODE}
+      </foreach>  
+  	</update>
+  	
+  	<update id="updateDC"  parameterType="java.util.List">  
+        
+          <foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+                update dc_data_monitor   
+                <set>  
+                  IN_DC_TOTAL_NUM=#{item.TOTAL_NUM}
+                </set>  
+                where REPLACE (STAT_DATE,'-','') = #{item.STAT_DATE} and PARK_CODE = #{item.PARK_CODE} 
+         </foreach>  
+            
+    </update> 
+    
+  	<update id="updateOutDC"  parameterType="java.util.List">  
+        
+          <foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+                update dc_data_monitor   
+                <set>  
+                  OUT_DC_TOTAL_NUM=#{item.TOTAL_NUM}
+                </set>  
+                where REPLACE (STAT_DATE,'-','') = #{item.STAT_DATE} and PARK_CODE = #{item.PARK_CODE} 
+         </foreach>  
+            
+    </update> 
+</mapper>

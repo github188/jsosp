@@ -1,0 +1,76 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化巡检</a></li>
+		  <li class="active">RDS慢sql</li>
+		</ol>
+	</div>
+</div>
+<h1>RDS慢sql</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="RdsSlowLog">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3 margin-bottom-15">
+    <label for="customerCode" class="control-label">RDS选择</label>
+      <select class="form-control" ng-model="rdsname" ng-options="RDS.db_instance_id for RDS in RDSresult" required></select>
+  </div>
+  <div class="col-md-3 margin-bottom-15">
+  	 <br>
+    <button type="button" ng-click="query()" class="btn btn-primary">查询</button>
+  </div>
+</div>
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">键列表</h4>
+      <table class="table table-condensed" style="word-break:break-all; word-wrap:break-all;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="text-align:center;">实例ID</th>
+            <th style="text-align:center;">执行开始时间</th>
+            <th style="text-align:center;width:30%">SQL语句</th>
+            <th style="text-align:center;">客户端IP</th>
+            <th style="text-align:center;">数据库名</th>
+            <th style="text-align:center;">执行时长(秒)</th>
+            <th style="text-align:center;">锁定时长(秒)</th>
+            <th style="text-align:center;">解析行数</th>
+            <th style="text-align:center;">返回行数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-mouseover="tableblur($index)" ng-mouseleave="tableleave()"  ng-repeat="RDS in RDSs track by $index">
+            <td style="{{RDS.style}};text-align:center;">{{$index+1}}</td>
+            <td style="{{RDS.style}};text-align:center;">{{RDS.db_instance_id}}</td>
+            <td style="{{RDS.style}};text-align:center;">{{RDS.execute_start_time}}</td>
+            <td style="{{RDS.style}};text-align:center;width:30%;">{{RDS.sql_param}}</td>
+            <td style="{{RDS.style}};text-align:center;">{{RDS.client_ip}}</td>
+            <td style="{{RDS.style}};text-align:center;">{{RDS.db_nanme}}</td>
+            <td style="{{RDS.style}};text-align:center;">{{RDS.query_times}}</td>
+            <td style="{{RDS.style}};text-align:center;">{{RDS.lock_times}}</td>
+            <td style="{{RDS.style}};text-align:center;">{{RDS.parser_row_counts}}</td>
+            <td style="{{RDS.style}};text-align:center;">{{RDS.return_row_counts}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="RdsSlowLog" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="RdsSlowLog" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RdsSlowLog" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="RdsSlowLog" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+

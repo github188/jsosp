@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.RedisSourceDAO">
+
+	<select id="list" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			id as ID,
+			check_time as CHECK_TIME,
+			redis_host as REDIS_HOST,
+			node1 as NODE1,
+			node2 as NODE2,
+			node3 as NODE3,
+			node4 as NODE4,
+			node5 as NODE5,
+			node6 as NODE6,
+			node7 as NODE7,
+			node8 as NODE8,
+			total as TOTAL
+		FROM
+			redis_resourse_data
+	]]>
+	<if test='redisHosts != "" '>  
+		where redis_host= #{redisHosts} 
+    </if>
+    order by check_time desc
+	limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="listRedis" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			distinct redis_host as REDIS_HOST
+		FROM
+			redis_resourse_data
+	]]>
+	</select>
+	
+	<select id="queryCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) as COUNTS
+		FROM
+			redis_resourse_data
+	]]>
+	<if test='redisHosts != "" '>  
+		where redis_host= #{redisHosts} 
+    </if>
+	</select>
+	
+	<select id="listbyline" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			l.redis_name as REDIS_HOST,
+			DATE_FORMAT(
+				r.check_time,
+				'%Y-%m-%d %H:%i'
+			) as DATE,
+			r.total as TOTAL
+		FROM
+			redis_resourse_data r
+		inner join redis_list l on r.redis_host = l.host_name
+		WHERE
+			1=1
+	]]>
+	<if test='starttime != "" '>  
+		and r.check_time >= #{starttime} 
+    </if>
+    <if test='endtime != "" '>  
+		and  #{endtime} >= r.check_time
+    </if>
+		ORDER BY
+			r.redis_host,
+			DATE_FORMAT(
+				r.check_time,
+				'%Y-%m-%d %H:%i'
+			);
+	</select>
+	
+	<select id="listbynodeline" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			l.redis_name as REDIS_HOST,
+			DATE_FORMAT(
+				r.check_time,
+				'%Y-%m-%d %H:%i'
+			) as DATE,
+			r.node1 as NODE1,
+			r.node2 as NODE2,
+			r.node3 as NODE3,
+			r.node4 as NODE4,
+			r.node5 as NODE5,
+			r.node6 as NODE6,
+			r.node7 as NODE7,
+			r.node8 as NODE8
+		FROM
+			redis_resourse_data r
+		inner join redis_list l on r.redis_host = l.host_name
+		WHERE
+			1=1 and cluster_flag = 1
+	]]>
+	<if test='starttime != "" '>  
+		and r.check_time >= #{starttime} 
+    </if>
+    <if test='endtime != "" '>  
+		and  #{endtime} >= r.check_time
+    </if>
+		ORDER BY
+			r.redis_host,
+			DATE_FORMAT(
+				r.check_time,
+				'%Y-%m-%d %H:%i'
+			);
+	</select>
+	
+</mapper>

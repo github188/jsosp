@@ -1,0 +1,142 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">自动化巡检</a></li>
+		  <li class="active">打折日志查询</li>
+		</ol>
+	</div>
+</div>
+<h1>打折日志查询</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="Discount">共<span class="badge">{{counts}}</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+	  <div class="col-md-2">
+	    <label for="projectName" class="control-label">开始日期</label>
+	    <p class="input-group">
+	      <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="dt" is-open="opened" close-text="Close" required/>
+	      <span class="input-group-btn">
+	        <button type="button" class="btn btn-default" ng-click="openCalendar($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+	      </span>
+	    </p>	    
+	   </div>
+	  <div class="col-md-2">
+	    <label for="projectName" class="control-label">结束日期</label>
+	    <p class="input-group">
+	      <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="dt1" is-open="opened1" close-text="Close" required/>
+	      <span class="input-group-btn">
+	        <button type="button" class="btn btn-default" ng-click="openCalendar1($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+	      </span>
+	    </p>	    
+	   </div>
+	  <div class="col-md-2">
+	    <label for="projectName" class="control-label">输入车牌号</label>
+   		<input type="text" class="form-control" value="" required ng-model="carno">
+	  </div>
+      <div class="col-md-2 margin-bottom-15">
+        <label class="control-label">打折状态</label>
+         <select class="form-control"  ng-init="ret=returns[0]" ng-model="ret" ng-options="ret.name for ret in returns" required>
+<!--          <option value="">-- 请选择服务类型 --</option> -->
+        </select>
+      </div>	  
+	  <div class="col-md-4 margin-bottom-15">
+	  	<br>
+	    <div class="col-md-2"><button ng-click="query()" class="btn btn-primary">查询</button></div>
+	    <div class="col-md-3" style="margin-top:0.5rem;color:red">{{result}}</div>
+	  </div>	  
+</div>
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">日志列表</h4>
+      <table class="table table-condensed" style="word-break:break-all; word-wrap:break-all;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="text-align:center;">车场编号</th>
+            <th style="text-align:center;">车场名称</th>
+            <th style="text-align:center;">车牌</th>
+            <th style="text-align:center;">SeqId</th>
+<!--             <th style="text-align:center;">返回码</th> -->
+            <th style="text-align:center;">返回信息</th>
+            <th style="text-align:center;">响应时间</th>
+<!--             <th style="text-align:center;">集成服务响应时间</th> -->
+            <th style="text-align:center;">明细</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-mouseover="tableblur($index)" ng-mouseleave="tableleave()" ng-repeat="discount in discounts track by $index">
+            <td style="{{discount.style}};text-align:center;">{{$index+1}}</td>
+            <td style="{{discount.style}};text-align:center;">{{discount.park_code}}</td>
+            <td style="{{discount.style}};text-align:center;">{{discount.park_name}}</td>
+            <td style="{{discount.style}};text-align:center;">{{discount.carno}}</td>
+            <td style="{{discount.style}};text-align:center;">{{discount.seqid}}</td>
+<!--             <td style="{{discount.style}};text-align:center;">{{discount.retcode}}</td> -->
+            <td style="{{discount.style}};text-align:center;">{{discount.retmsg}}</td>
+<!--             <td style="{{discount.style}};text-align:center;">{{discount.cloud}}</td> -->
+            <td style="{{discount.style}};text-align:center;">{{discount.jsifs}}</td>
+			<td style="{{discount.style}};text-align:center;">
+            	<a ui-sref="Discount" data-toggle="modal" data-target="#info" ng-click="message($index)">
+	          		<span class="glyphicon glyphicon-tasks"></span>
+	        	</a>
+	        </td>	            
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="Discount" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="Discount" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="Discount" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="Discount" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+   <div class="modal-dialog" style="width:50%">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 style="color:black" class="modal-title" id="myModalLabel">
+               	明细<span style="color:red">({{resultMsg}})</span>
+            </h4>
+         </div>
+         <div class="modal-body">
+	      <table class="table table-condensed table-hover table-bordered table-striped" style="word-break:break-all; word-wrap:break-all;color:black;">
+	        <thead>
+	          <tr>
+	            <th>#</th>
+	            <th style="text-align:center;">节点</th>
+	            <th style="text-align:center;">日志</th>
+<!-- 	            <th style="text-align:center;">指令</th> -->
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr ng-repeat="log in logs track by $index">	
+	            <td style="{{log.style}};text-align:center;">{{$index+1}}</td>
+	            <td style="{{log.style}};text-align:center;">{{log.node}}</td>
+	            <td style="{{log.style}};text-align:center;">{{log.info}}</td>
+<!-- 	            <td style="{{log.style}};text-align:center;">{{log.serviceid}}</td> -->
+	          </tr>
+	        </tbody>
+	      </table>			
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>

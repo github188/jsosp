@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.system.packages.dao.PackagesDao">
+
+	<insert id="addPackage" parameterType="String">
+		INSERT INTO mas_package (id, componentType, version, principal, release_note,db_script,para_file,component_file,create_user,create_time,remark,keep_path) VALUES
+			(#{id},#{componentId},#{versionDate},#{principal},#{releaseNote},#{dbScript},#{paraFile},#{componentFile},'',sysdate(),#{remark},#{keep_path});
+	</insert>
+	
+	<select id="queryPackageList" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			id AS ID,
+			version AS VERSION,
+			principal AS PRINCIPAL,
+			db_script AS DB_SCRIPT,
+			para_file AS PARA_FILE,
+			componentType AS COMPONENTTYPE,
+			create_time AS CREATE_TIME,
+			remark AS REMARK,
+			keep_path as KEEP_PATH
+		FROM
+			mas_package 
+		where componentType LIKE CONCAT('%', #{componentId}, '%') and version LIKE CONCAT('%', #{versionDate}, '%')
+		and principal LIKE CONCAT('%', #{principal}, '%') and db_script LIKE CONCAT('%', #{hasDbScript}, '%') 
+		and para_file LIKE CONCAT('%', #{hasParaFile}, '%')
+		order by create_time desc
+		limit #{startpages},#{pageSize}
+	]]>
+	</select>
+	
+	<select id="queryPackagesCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) AS PACKAGECOUNTS
+		FROM
+			mas_package 
+		where componentType LIKE CONCAT('%', #{componentId}, '%') and version LIKE CONCAT('%', #{versionDate}, '%')
+		and principal LIKE CONCAT('%', #{principal}, '%') and db_script LIKE CONCAT('%', #{hasDbScript}, '%') 
+		and para_file LIKE CONCAT('%', #{hasParaFile}, '%')
+	]]>
+	</select>
+	
+	
+</mapper>

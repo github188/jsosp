@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.project.dao.ProjectOperateDao">
+	<resultMap id="ProjectOperateDay" type="com.jieshun.ops.project.model.ProjectOperateDay">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="PROJECT_CODE" property="projectCode" jdbcType="VARCHAR" />
+		<result column="BIZ_DATE" property="bizDate" jdbcType="DATE" />
+		<result column="M_POSTPAY_TIMES" property="mPostpayTimes" jdbcType="INTEGER" />
+		<result column="M_POSTPAY_AMOUNT" property="mPostpayAmount" jdbcType="DECIMAL" />
+		<result column="C_POSTPAY_TIMES" property="cPostpayTimes" jdbcType="INTEGER" />
+		<result column="C_POSTPAY_AMOUNT" property="cPostpayAmount" jdbcType="DECIMAL" />
+		<result column="DISCOUNT_TIMES" property="discountTimes" jdbcType="INTEGER" />
+		<result column="DISCOUNT_AMOUNT" property="discountAmount" jdbcType="DECIMAL" />
+		<result column="POSTPAY_FEE_TIMES" property="postpayFeeTimes" jdbcType="INTEGER" />
+		<result column="PREPAY_FEE_TIMES" property="prepayFeeTimes" jdbcType="INTEGER" />
+		<result column="M_PREPAY_TIMES" property="mPrepayTimes" jdbcType="INTEGER" />
+		<result column="M_PREPAY_AMOUNT" property="mPrepayAmount" jdbcType="DECIMAL" />
+		<result column="C_PREPAY_TIMES" property="cPrepayTimes" jdbcType="INTEGER" />
+		<result column="C_PREPAY_AMOUNT" property="cPrepayAmount" jdbcType="DECIMAL" />
+		<result column="TOTAL_TIMES" property="totalTimes" jdbcType="INTEGER" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<resultMap id="ProjectCarPostpayDO" type="com.jieshun.ops.project.model.ProjectCarPostpayDO">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="PROJECT_CODE" property="projectCode" jdbcType="VARCHAR" />
+		<result column="BIZ_DATE" property="bizDate" jdbcType="DATE" />
+		<result column="PAY_TYPE_NAME" property="payTypeName" jdbcType="VARCHAR" />
+		<result column="OUT_TIMES" property="outTimes" jdbcType="INTEGER" />
+		<result column="YS_AMOUNT" property="ysAmount" jdbcType="DECIMAL" />
+		<result column="SS_AMOUNT" property="ssAmount" jdbcType="DECIMAL" />
+	</resultMap>
+
+	<sql id="ProjectOperate_Column_List">
+		ID, PROJECT_CODE, BIZ_DATE, M_POSTPAY_TIMES, M_POSTPAY_AMOUNT, C_POSTPAY_TIMES, C_POSTPAY_AMOUNT, DISCOUNT_TIMES, DISCOUNT_AMOUNT, POSTPAY_FEE_TIMES, PREPAY_FEE_TIMES, M_PREPAY_TIMES, M_PREPAY_AMOUNT, C_PREPAY_TIMES, C_PREPAY_AMOUNT,TOTAL_TIMES,CREATE_TIME
+	</sql>
+	
+	<!-- 取项目某天的线上支付次数及金额汇总-->
+	<select id="getProjectOperateMPostpayData" resultMap="ProjectOperateDay"
+		parameterType="java.lang.String">
+		<![CDATA[
+		SELECT PARK_CODE AS PROJECT_CODE,DATE_FORMAT(CREATE_TIME,'%Y-%m-%d') as BIZ_DATE,sum(TOTAL_FEE) AS M_POSTPAY_AMOUNT,count(0) AS M_POSTPAY_TIMES FROM CS_BIZ_ORDER
+		WHERE STATUS!='-1' AND PARK_CODE=#{projectCode} 
+			AND CREATE_TIME >= STR_TO_DATE(#{beginDate},'%Y-%m-%d') and CREATE_TIME < STR_TO_DATE(#{endDate},'%Y-%m-%d')
+		GROUP BY PARK_CODE,DATE_FORMAT(CREATE_TIME,'%Y-%m-%d')
+		]]>
+	</select>
+	<!-- 取项目（车场）某天的线上打折汇次数与金额 -->
+	<select id="getProjectOperateMPostpayDiscountData" resultMap="ProjectOperateDay"
+		parameterType="java.lang.String">
+		<![CDATA[
+		SELECT dp.park_code AS projectCode, DATE_FORMAT(pdr.CREATE_TIME, '%Y-%m-%d') AS BIZ_DATE, SUM(pdp.amount) AS DISCOUNT_AMOUNT, COUNT(pdr.id) AS DISCOUNT_TIMES
+		FROM cs_pf_discount_record pdr force index(IX_PF_DISCOUNT_RECORD_4)
+		INNER JOIN cs_pf_discount_plan pdp ON pdr.plan_id = pdp.id
+		INNER JOIN cs_pf_discount_store pds ON pds.plan_id = pdp.id
+		INNER JOIN cs_dt_park dp ON pds.park_id = dp.id
+		WHERE DP.PARK_CODE = #{projectCode}
+			AND pdr.CREATE_TIME between STR_TO_DATE(#{beginDate},'%Y-%m-%d') and STR_TO_DATE(#{endDate},'%Y-%m-%d')
+		GROUP BY dp.park_code, DATE_FORMAT(pdr.CREATE_TIME, '%Y-%m-%d')
+		]]>
+	</select>
+	<!--取项目（车场）某天的月卡延期线上支付笔数及金额 -->
+	<select id="getProjectOperateMPrepayData" resultMap="ProjectOperateDay" parameterType="java.lang.String">
+		<![CDATA[
+		SELECT ds.SUBSYSTEM_CODE AS PROJECT_CODE,DATE_FORMAT(bcd.create_time,'%Y-%m-%d') as BIZ_DATE,count(bcd.id) AS M_PREPAY_TIMES,sum(bcd.money) AS M_PREPAY_AMOUNT from cs_biz_card_delay bcd
+		INNER JOIN cs_dt_card dc on dc.id=bcd.card_id
+		INNER JOIN cs_dt_subsystem ds on ds.id=dc.subsystem_id
+		WHERE bcd.pay_status='PAY_SUCCESS' and ds.SUBSYSTEM_CODE=#{projectCode}
+			and  bcd.CREATE_TIME >= STR_TO_DATE(#{beginDate},'%Y-%m-%d') and bcd.CREATE_TIME < STR_TO_DATE(#{endDate},'%Y-%m-%d')
+		GROUP BY ds.SUBSYSTEM_CODE,DATE_FORMAT(bcd.create_time,'%Y-%m-%d') 
+		]]>
+	</select>
+	
+	<!-- 取项目（车场）存在收费的所有收费方式日度汇总数据，需要在程序里要分类统计出现金支付及其他方式支付的金额汇总 -->
+	<select id="getProjectOperateCPostpayData" resultMap="ProjectCarPostpayDO"
+		parameterType="java.lang.String">
+		<![CDATA[
+		SELECT cs.CODE AS PROJECT_CODE,dpo.PAY_TYPE_NAME,DATE_FORMAT(dpo.out_time,'%Y-%m-%d') as BIZ_DATE,count(dpo.id) AS OUT_TIMES,sum(ys_money) AS YS_AMOUNT,sum(ss_money) AS SS_AMOUNT from NP_DT_PARK_OUT dpo use index(primary)
+		INNER JOIN NP_CF_SUBSYSTEM cs on dpo.subsystem_id=cs.id
+		WHERE  cs.CODE=#{projectCode} and dpo.out_time >= STR_TO_DATE(#{beginDate},'%Y-%m-%d') and dpo.out_time < STR_TO_DATE(#{endDate},'%Y-%m-%d')
+			 and dpo.ys_money>0
+		GROUP BY cs.CODE,dpo.pay_type_name,DATE_FORMAT(dpo.out_time,'%Y-%m-%d')
+		]]>
+	</select>
+	<!-- 取项目（车场）免费次次数的日度汇总数据，暂不区分临时卡和月卡 -->
+	<select id="getProjectOperateFeeTimesData" resultMap="ProjectOperateDay"
+		parameterType="java.lang.String">
+		<![CDATA[
+		SELECT cs.CODE AS PROJECT_CODE,DATE_FORMAT(dpo.out_time,'%Y-%m-%d') AS BIZ_DATE,count(dpo.id) as POSTPAY_FEE_TIMES from np_dt_park_out dpo use index(primary)
+		INNER JOIN np_cf_subsystem cs on dpo.subsystem_id=cs.id
+		WHERE  cs.CODE=#{projectCode} and dpo.out_time >=STR_TO_DATE(#{beginDate},'%Y-%m-%d ') and dpo.out_time <STR_TO_DATE(#{endDate},'%Y-%m-%d ')
+					and dpo.ys_money=0
+		GROUP BY cs.CODE,DATE_FORMAT(dpo.out_time,'%Y-%m-%d')
+		]]>
+	</select>
+	<!-- 取项目（车场）每日所有支付方式的月卡缴费次数与金额的汇总数据 -->
+	<select id="getProjectOperateTotalPrepayData" resultMap="ProjectOperateDay"
+		parameterType="java.lang.String">
+		<![CDATA[
+		SELECT cs.code AS PROJECT_CODE,DATE_FORMAT(ccd.defer_time,'%Y-%m-%d') AS BIZ_DATE,count(ccd.id) as C_PREPAY_TIMES,sum(ccd.defer_money) AS C_PREPAY_AMOUNT 
+		FROM np_cd_card_defer ccd
+		INNER JOIN np_cd_card cc on ccd.card_id=cc.id
+		LEFT JOIN np_cf_subsystem cs on cs.id=cc.subsystem_id
+		WHERE cs.CODE=#{projectCode} and ccd.defer_time >=STR_TO_DATE(#{beginDate},'%Y-%m-%d ') and ccd.defer_time <STR_TO_DATE(#{endDate},'%Y-%m-%d ')
+		GROUP BY cs.CODE,DATE_FORMAT(ccd.defer_time,'%Y-%m-%d')
+		]]>
+	</select>
+	
+	<select id="getProjectOperateStateDay" resultMap="ProjectOperateDay"
+		parameterType="java.lang.String">
+		<![CDATA[
+		SELECT pod.id,pod.PROJECT_CODE,DATE_FORMAT(pod.BIZ_DATE,'%Y-%m-%d') AS BIZ_DATE 
+		FROM STA_PROJ_OPERATION_DAY pod
+		WHERE pod.PROJECT_CODE=#{projectCode} and DATE_FORMAT(pod.BIZ_DATE,'%Y-%m-%d') =#{bizDate}
+		]]>
+	</select>
+	
+	<!-- 插入统计记录 -->
+	<insert id="addProjectOperateDayState" parameterType="java.lang.String">
+		INSERT INTO sta_proj_operation_day (
+			ID, 
+			PROJECT_CODE, 
+			BIZ_DATE, 
+			M_POSTPAY_TIMES, 
+			M_POSTPAY_AMOUNT, 
+			C_POSTPAY_TIMES, 
+			C_POSTPAY_AMOUNT, 
+			DISCOUNT_TIMES, 
+			DISCOUNT_AMOUNT, 
+			POSTPAY_FEE_TIMES, 
+			PREPAY_FEE_TIMES, 
+			M_PREPAY_TIMES, 
+			M_PREPAY_AMOUNT, 
+			C_PREPAY_TIMES, 
+			C_PREPAY_AMOUNT,
+			TOTAL_TIMES,
+			CREATE_TIME)
+		VALUES (
+			#{id},
+			#{projectCode},
+			#{bizDate},
+			#{mPostpayTimes},
+			#{mPostpayAmount},
+			#{cPostpayTimes},
+			#{cPostpayAmount},
+			#{discountTimes},
+			#{discountAmount},
+			#{postpayFeeTimes},
+			#{prepayFeeTimes},
+			#{mPrepayTimes},
+			#{mPrepayAmount},
+			#{cPrepayTimes},
+			#{cPrepayAmount},
+			#{totalTimes},
+			SYSDATE()) ;
+		
+	</insert>
+	
+	<!-- 更新统计记录 -->
+	<update id = "updateProjectOperateDayState" parameterType = "java.lang.String">
+     	UPDATE sta_proj_operation_day SET 
+     		PROJECT_CODE=#{projectCode}, 
+     		BIZ_DATE=#{bizDate}, 
+     		M_POSTPAY_TIMES=#{mPostpayTimes},
+     		M_POSTPAY_AMOUNT=#{mPostpayAmount},
+			C_POSTPAY_TIMES=#{cPostpayTimes}, 
+			C_POSTPAY_AMOUNT=#{cPostpayAmount}, 
+			DISCOUNT_TIMES=#{discountTimes}, 
+			DISCOUNT_AMOUNT=#{discountAmount}, 
+			POSTPAY_FEE_TIMES=#{postpayFeeTimes}, 
+			PREPAY_FEE_TIMES=#{prepayFeeTimes}, 
+			M_PREPAY_TIMES=#{mPrepayTimes}, 
+			M_PREPAY_AMOUNT=#{mPrepayAmount}, 
+			C_PREPAY_TIMES=#{cPrepayTimes}, 
+			C_PREPAY_AMOUNT=#{cPrepayAmount}, 
+			TOTAL_TIMES=#{totalTimes}, 
+			UPDATE_TIME=SYSDATE()
+     	WHERE  ID=#{id}
+   </update>
+</mapper>
+

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.redis.dao.RedisDao">
+	<resultMap id="RedisResource" type="com.jieshun.ops.redis.model.RedisResource">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="check_time" property="checkTime" jdbcType="TIMESTAMP" />
+		<result column="redis_host" property="redisHost" jdbcType="VARCHAR" />
+		<result column="node1" property="node1" jdbcType="VARCHAR" />
+		<result column="node2" property="node2" jdbcType="VARCHAR" />
+		<result column="node3" property="node3" jdbcType="VARCHAR" />
+		<result column="node4" property="node4" jdbcType="VARCHAR" />
+		<result column="node5" property="node5" jdbcType="VARCHAR" />
+		<result column="node6" property="node6" jdbcType="VARCHAR" />
+		<result column="node7" property="node7" jdbcType="VARCHAR" />
+		<result column="node8" property="node8" jdbcType="VARCHAR" />
+		<result column="total" property="total" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="RedisBigkey" type="com.jieshun.ops.redis.model.RedisBigkey">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="check_time" property="checkTime" jdbcType="TIMESTAMP" />
+		<result column="redis_host" property="redisHost" jdbcType="VARCHAR" />
+		<result column="node" property="node" jdbcType="VARCHAR" />
+		<result column="key_name" property="keyName" jdbcType="VARCHAR" />
+		<result column="key_type" property="keyType" jdbcType="VARCHAR" />
+		<result column="key_value" property="keyValue" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="redisResource_Column_List">
+		id,check_time,redis_host,node1,node2,node3,node4,node5,node6,node7,node8,total
+	</sql>
+	
+	<sql id="redisBigkey_Column_List">
+		id,check_time,redis_host,node,key_name,key_type,key_value
+	</sql>
+	
+	<select id="getRedisResource" resultMap="RedisResource"
+		parameterType="java.lang.String">
+		select
+		<include refid="redisResource_Column_List" />
+		from redis_resourse_data limit 50
+	</select>
+	
+	<select id="getRedisBigkey" resultMap="RedisBigkey"
+		parameterType="java.lang.String">
+		select
+		<include refid="redisBigkey_Column_List" />
+		from redis_bigkey_data where DATE_FORMAT(check_time,'%Y-%m-%d %H')=DATE_FORMAT(SYSDATE(),'%Y-%m-%d %H')
+	</select>
+	
+	<select id="getRedisBigkeyByTime" resultMap="RedisBigkey"
+		parameterType="java.lang.String">
+		select
+		<include refid="redisBigkey_Column_List" />
+		from redis_bigkey_data where DATE_FORMAT(check_time,'%Y-%m-%d %H')=#{time}
+	</select>
+	
+	<select id="getRedisResourceBySTime" resultMap="RedisResource"
+		parameterType="java.lang.String">
+		select
+		<include refid="redisResource_Column_List" />
+		from redis_resourse_data where check_time between #{sTime} and sysdate()
+	</select>
+	
+	<select id="getRedisResourceByTime" resultMap="RedisResource"
+		parameterType="java.lang.String">
+		select
+		<include refid="redisResource_Column_List" />
+		from redis_resourse_data where check_time between #{sTime} and #{eTime}
+	</select>
+	
+</mapper>

@@ -1,0 +1,138 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="#">数据删除管理</a></li>
+		  <li class="active">数据删除明细</li>
+		</ol>
+	</div>
+</div>
+<h1>数据删除明细</h1>
+
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <ul class="nav nav-pills">
+      <li class="active"><a ui-sref="DataDelete">共<span class="badge">{{datadeletecount}}</span></a></li>
+      <li class="active"><a ui-sref="DataDelete">正在运行<span class="badge">{{datadeletecount1}}</span></a></li>
+      <li class="active"><a ui-sref="DataDelete">未开始<span class="badge">{{datadeletecount2}}</span></a></li>
+    </ul>
+  </div>
+</div> 
+<div class="row">
+  <div class="col-md-12">
+    <div class="">
+      <h4 class="margin-bottom-15">数据删除列表</h4>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>所属平台</th>
+            <th>子系统编号</th>
+            <th>子系统名称</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+            <th>明细</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-mouseover="tableblur($index)" ng-repeat="datadelete in datadeletes track by $index">
+            <td style="{{datadelete.style}}">{{$index+1}}</td>
+            <td style="{{datadelete.style}}">{{datadelete.platform}}</td>
+            <td style="{{datadelete.style}}">{{datadelete.code}}</td>
+            <td style="{{datadelete.style}}">{{datadelete.name}}</td>
+            <td style="{{datadelete.style}}">{{datadelete.starttime}}</td>
+            <td style="{{datadelete.style}}">{{datadelete.endtime}}</td>
+            <td style="{{datadelete.style}}">
+            	<a ui-sref="DataDelete" data-toggle="modal" data-target="#info" ng-click="message($index)">
+	          		<span class="glyphicon glyphicon-tasks"></span>
+	        	</a>
+	        </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="formactdion pull-left">
+        <a class="btn btn-primary" data-toggle="modal" data-target="#add">新增</a>
+      </div>
+      <ul class="pagination pull-right">
+        <li class="enable" ng-click="first()"><a ui-sref="DataDelete" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">首页</a></li>
+        <li class="{{leftpagestatus}}" ng-click="leftchangepage()"><a ui-sref="DataDelete" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&laquo;</a></li>
+
+        <li class="{{page.status}}" ng-repeat="page in pages" ng-click="changepage($index)"><a class='btn' style="{{page.color}};background-color:#5bc0de;border-color:#357ebd">{{ page.index + 1 }}</a></li>
+
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="DataDelete" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">&raquo;</a></li>
+        <li class="{{rightpagestatus}}" ng-click="rightchangepage()"><a ui-sref="DataDelete" style="color:#fff;background-color:#5bc0de;border-color:#357ebd">共&nbsp; &nbsp;{{allpages}}&nbsp; &nbsp;页</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+               	新增
+            </h4>
+         </div>
+         <div class="modal-body">
+			<form name="myform" role="form" id="templatemo-preferences-form">
+				<div class="row">
+		          <div class="col-md-6 margin-bottom-15">
+		             <span class="label label-info">平台选择</span>
+		             <select class="form-control" ng-model="platform" ng-options="platform.name for platform in platforms" required>
+			            <option value="">-- 请选择平台类型 --</option> 
+			         </select>
+		          </div>
+		          <div class="col-md-6 margin-bottom-15">
+		             <span class="label label-info">子系统编号</span>
+            		 <input type="text" class="form-control" value="" required ng-model="code">
+		          </div>
+		          <div class="col-md-6 margin-bottom-15">
+		             <span class="label label-info">redis前缀</span>
+            		 <input type="text" class="form-control" value="" required ng-model="prefix">
+		          </div>
+		          <div class="col-md-6 margin-bottom-15">
+		          		<span class="label label-info">是否删除子系统、防区数据</span>
+		          		<p><p>
+		          		<div class="col-md-offset-4 margin-bottom-15">
+			              	<label class="checkbox-inline" ng-click="click1()" >
+			                <input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="isDeleted">是
+		          		</div>
+		              </label>
+		          </div>
+		        </div>
+			</form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" ng-disabled="myform.$invalid ||myform.$pristine" 
+            		class="btn btn-primary" data-dismiss="modal" ng-click="save()">新增</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+               	日志
+            </h4>
+         </div>
+         <div class="modal-body" style="color:black;text-align:center">
+			{{msg}}
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">退出</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>

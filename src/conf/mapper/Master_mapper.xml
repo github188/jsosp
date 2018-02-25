@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.master.dao.NisspPlatformDao">
+	<resultMap id="NisspPlatform" type="com.jieshun.ops.master.model.NisspPlatform">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="PLATFORM_CODE" property="platformCode" jdbcType="VARCHAR" />
+		<result column="PLATFORM_NAME" property="platformName" jdbcType="VARCHAR" />
+		<result column="OF_URL" property="ofUrl" jdbcType="VARCHAR" />
+		<result column="OF_HOST_NAME" property="ofHostName" jdbcType="VARCHAR" />
+		<result column="OF_ACCOUNT" property="ofAccount" jdbcType="VARCHAR" />
+		<result column="OF_PASSWD" property="ofPasswd" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	
+	
+	<resultMap id="OpenfireDO" type="com.jieshun.ops.master.model.OpenfireDO" extends="NisspPlatform">
+	
+	</resultMap>
+
+	<sql id="NisspPlatform_Column_List">
+		ID, PLATFORM_CODE, PLATFORM_NAME, OF_URL,OF_HOST_NAME, OF_ACCOUNT, OF_PASSWD
+	</sql>
+	
+	<sql id="PersonDO_Columns">
+		ID, CODE, NAME, GENDER,DEPARTMENT, POSITION, PHONE,EMAIL,IS_EMPLOYEE
+	</sql>
+	
+	<!-- 取项目某天的线上支付次数及金额汇总-->
+	<select id="getAlltNisspPlatform" resultMap="NisspPlatform"
+		parameterType="java.lang.String">
+		
+		select
+		<include refid="NisspPlatform_Column_List" />
+		from mas_platform
+		
+	</select>
+	
+	<select id="getAllPlatformIncludeOFUrl" resultMap="OpenfireDO"
+		parameterType="java.lang.String">
+		
+		select
+		<include refid="NisspPlatform_Column_List" />
+		from mas_platform where status='NORMAL'
+		
+	</select>
+	
+	
+</mapper>

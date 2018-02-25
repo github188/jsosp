@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jieshun.ops.autode.dao.HttpCheckDAO">
+
+	<select id="list" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			id as ID,
+			check_time as OPER_TIME,
+			platform_name as PLATFORM_NAME,
+			allocate_item as APP_NAME,
+			request_url as REQUEST_URL,
+			allocate_value as ALLOCATE_VALUE,
+			check_status as CHECK_STATUS
+		FROM
+			http_check_info
+		WHERE
+			check_time = (
+				SELECT
+					max(check_time)
+				FROM
+					http_check_info
+			
+	]]>
+	<if test='httpService != "" '>  
+		where platform_name= #{httpService} 
+    </if>
+			)
+	<if test='httpService != "" '>  
+		and platform_name= #{httpService} 
+    </if>
+	limit #{startpages},#{pageSize}
+	</select>
+	
+	<select id="listHttp" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			distinct platform_name as PLATFORM_NAME
+		FROM
+			http_check_info
+	]]>
+	</select>
+	
+	<select id="queryCounts" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT
+			count(1) as COUNTS
+		FROM
+			http_check_info
+		WHERE
+			check_time = (
+				SELECT
+					max(check_time)
+				FROM
+					http_check_info
+	]]>
+	<if test='httpService != "" '>  
+		where platform_name= #{httpService} 
+    </if>
+			)
+	<if test='httpService != "" '>  
+		and platform_name= #{httpService} 
+    </if>
+	</select>
+	
+</mapper>

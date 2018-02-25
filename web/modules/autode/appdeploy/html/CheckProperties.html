@@ -1,0 +1,77 @@
+<div class="row">
+	<div class="col-md-6">
+		<ol class="breadcrumb" style="background-color:#d9edf7">
+		  <li><a ui-sref="Automation">自动化部署管理</a></li>
+		  <li class="active">1.对比配置文件</li>
+		</ol>
+	</div>
+</div>
+<h1>1.对比配置文件</h1>
+<br>
+<div class="row margin-bottom-30">
+  <div class="col-md-12">
+    <form name="myform" role="form" id="templatemo-preferences-form" novalidate>
+      <div class="row">
+        <div class="col-md-4 margin-bottom-15">
+          <label class="control-label">请选择服务类型</label>
+           <select class="form-control" ng-model="service" ng-options="service.label for service in services" required>
+           <option value="">-- 请选择服务类型 --</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <!-- <div class="col-md-4 margin-bottom-15">
+          <label for="customerName" class="control-label">输入配置文件名</label>
+          <select class="form-control" ng-model="file" ng-options="service.file for service in services" required>
+           <option value="">-- 请选择服务类型 --</option>
+          </select>
+        </div> -->
+        <div class="col-md-4 margin-bottom-15">
+            <label for="customerName" class="control-label">输入ip</label>
+            <input type="text" name="ip" ng-model="ip" class="form-control" ng-pattern="phoneNumberPattern" required>
+        </div>
+        <div class="col-md-4 margin-bottom-15">
+            <label for="customerName" class="control-label">外发配置ftp路径</label>
+            <input type="text" name="path" ng-model="path" class="form-control" required>
+        </div>
+        <div class="col-md-4 margin-bottom-15">
+          <br>
+          <div class="col-md-3 col-md-offset-1"><button ng-click="operate()" class="btn btn-primary" ng-disabled="myform.$invalid ||myform.$pristine">对比</button></div>
+          <div class="col-md-5 col-md-offset-1" style="color:red">{{result}}</div>
+        </div>
+      </div>
+
+		<div class="row">
+			<div class="col-md-4 ">
+				<h4 class="margin-bottom-15">对比结果</h4>
+				<table class="table table-hover table-bordered">
+					<thead>
+						<tr class="active">
+							<th>#</th>
+							<th>ip</th>
+							<th>结果</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="params in params2" class="success">
+							<td>{{$index+1}}</td>
+							<td>{{params.ip}}</td>
+							<td>{{params.result}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-8 margin-bottom-15">
+				<label for="notes">日志</label>
+				<textarea class="form-control" rows="15" id="notes" ng-model='logs'></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<button class="btn btn-primary" ng-click="next()"
+					ng-disabled="myform.$invalid ||myform.$pristine">下一步</button>
+			</div>
+		</div>
+		</form>
+  </div>
+</div>
